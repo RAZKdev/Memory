@@ -1,6 +1,7 @@
 /**
  * InMemoryMemoryRepository Adapter
  * Fast, deterministic in-memory persistence adapter for unit/integration testing and standalone runtime.
+ * Extended with ADR (Decision) records and Hybrid Vector Search.
  */
 
 import {
@@ -8,15 +9,27 @@ import {
   MemoryFilter,
   MemoryRepository,
   ReviseMemoryParams,
+  SearchParams,
+  SearchResult,
 } from "@/domain/repository";
 import {
   AccessPolicy,
+  Decision,
+  DecisionStatus,
+  DerivedEmbedding,
   Memory,
   MemoryVersion,
   ProjectScope,
+  RetrievalEvent,
   Source,
   SourceReference,
 } from "@/domain/types";
+import {
+  calculateKeywordScore,
+  cosineSimilarity,
+  generateLocalEmbedding,
+  hybridScoreFusion,
+} from "@/domain/vector";
 
 export class InMemoryMemoryRepository implements MemoryRepository {
   private projectScopes = new Map<string, ProjectScope>();
@@ -25,6 +38,9 @@ export class InMemoryMemoryRepository implements MemoryRepository {
   private versions = new Map<string, MemoryVersion[]>(); // memoryId -> MemoryVersion[]
   private sourceReferences = new Map<string, SourceReference[]>(); // memoryId -> SourceReference[]
   private accessPolicies = new Map<string, AccessPolicy>(); // projectScopeId -> AccessPolicy
+  private decisions = new Map<string, Decision>(); // decisionId -> Decision
+  private embeddings = new Map<string, DerivedEmbedding>(); // memoryId -> DerivedEmbedding
+  private retrievalEvents: RetrievalEvent[] = [];
 
   constructor(initialData?: {
     projectScopes?: ProjectScope[];
@@ -33,6 +49,7 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     versions?: MemoryVersion[];
     sourceReferences?: SourceReference[];
     accessPolicies?: AccessPolicy[];
+    decisions?: Decision[];
   }) {
     if (initialData?.projectScopes) {
       for (const p of initialData.projectScopes) {
@@ -47,6 +64,17 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     if (initialData?.memories) {
       for (const m of initialData.memories) {
         this.memories.set(m.id, m);
+        // Automatically derive initial embedding
+        const vector = generateLocalEmbedding(`${m.title} ${m.content} ${m.tags.join(" ")}`);
+        this.embeddings.set(m.id, {
+          id: `emb-${m.id}`,
+          memoryId: m.id,
+          memoryVersion: m.currentVersion,
+          model: "local-deterministic-v1",
+          vector,
+          dimensions: vector.length,
+          derivedAt: m.createdAt,
+        });
       }
     }
     if (initialData?.versions) {
@@ -68,8 +96,14 @@ export class InMemoryMemoryRepository implements MemoryRepository {
         this.accessPolicies.set(pol.projectScopeId, pol);
       }
     }
+    if (initialData?.decisions) {
+      for (const d of initialData.decisions) {
+        this.decisions.set(d.id, d);
+      }
+    }
   }
 
+  // --- Project Scopes ---
   async getProjectScopes(): Promise<ProjectScope[]> {
     return Array.from(this.projectScopes.values()).sort((a, b) =>
       a.name.localeCompare(b.name)
@@ -93,6 +127,7 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     return created;
   }
 
+  // --- Sources ---
   async getSources(projectScopeId?: string): Promise<Source[]> {
     const all = Array.from(this.sources.values());
     if (projectScopeId) {
@@ -118,6 +153,7 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     return created;
   }
 
+  // --- Memories ---
   async getMemories(filter?: MemoryFilter): Promise<Memory[]> {
     let list = Array.from(this.memories.values());
 
@@ -143,7 +179,6 @@ export class InMemoryMemoryRepository implements MemoryRepository {
       );
     }
 
-    // Sort newest first
     return list.sort(
       (a, b) =>
         new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
@@ -176,6 +211,20 @@ export class InMemoryMemoryRepository implements MemoryRepository {
       this.sourceReferences.set(memory.id, []);
     }
 
+    // Automatically derive and store embedding
+    const vector = generateLocalEmbedding(
+      `${memory.title} ${memory.content} ${memory.tags.join(" ")}`
+    );
+    this.embeddings.set(memory.id, {
+      id: `emb-${memory.id}`,
+      memoryId: memory.id,
+      memoryVersion: memory.currentVersion,
+      model: "local-deterministic-v1",
+      vector,
+      dimensions: vector.length,
+      derivedAt: memory.createdAt,
+    });
+
     return memory;
   }
 
@@ -187,12 +236,25 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     history.push(newVersion);
     this.versions.set(updatedMemory.id, history);
 
+    // Re-derive updated embedding
+    const vector = generateLocalEmbedding(
+      `${updatedMemory.title} ${updatedMemory.content} ${updatedMemory.tags.join(" ")}`
+    );
+    this.embeddings.set(updatedMemory.id, {
+      id: `emb-${updatedMemory.id}-v${updatedMemory.currentVersion}`,
+      memoryId: updatedMemory.id,
+      memoryVersion: updatedMemory.currentVersion,
+      model: "local-deterministic-v1",
+      vector,
+      dimensions: vector.length,
+      derivedAt: updatedMemory.updatedAt,
+    });
+
     return updatedMemory;
   }
 
   async getMemoryVersions(memoryId: string): Promise<MemoryVersion[]> {
     const list = this.versions.get(memoryId) || [];
-    // Return sorted in descending order of version number
     return [...list].sort((a, b) => b.versionNumber - a.versionNumber);
   }
 
@@ -200,6 +262,163 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     return this.sourceReferences.get(memoryId) || [];
   }
 
+  // --- Decisions (ADRs) ---
+  async getDecisions(filter?: {
+    projectScopeId?: string;
+    status?: DecisionStatus;
+  }): Promise<Decision[]> {
+    let list = Array.from(this.decisions.values());
+    if (filter?.projectScopeId) {
+      list = list.filter((d) => d.projectScopeId === filter.projectScopeId);
+    }
+    if (filter?.status) {
+      list = list.filter((d) => d.status === filter.status);
+    }
+    return list.sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  }
+
+  async getDecisionById(id: string): Promise<Decision | null> {
+    return this.decisions.get(id) || null;
+  }
+
+  async createDecision(
+    decision: Omit<Decision, "createdAt" | "updatedAt">
+  ): Promise<Decision> {
+    const timestamp = new Date().toISOString();
+    const created: Decision = {
+      ...decision,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    this.decisions.set(created.id, created);
+    return created;
+  }
+
+  async updateDecision(
+    id: string,
+    updates: Partial<
+      Pick<
+        Decision,
+        | "title"
+        | "context"
+        | "decisionText"
+        | "consequences"
+        | "status"
+        | "relatedMemoryIds"
+        | "sourceIds"
+      >
+    >
+  ): Promise<Decision> {
+    const existing = this.decisions.get(id);
+    if (!existing) {
+      throw new Error(`Decision with ID '${id}' not found.`);
+    }
+
+    const updated: Decision = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    this.decisions.set(id, updated);
+    return updated;
+  }
+
+  // --- Derived Embeddings & Hybrid Search Engine ---
+  async storeEmbedding(embedding: DerivedEmbedding): Promise<void> {
+    this.embeddings.set(embedding.memoryId, embedding);
+  }
+
+  async getEmbedding(memoryId: string): Promise<DerivedEmbedding | null> {
+    return this.embeddings.get(memoryId) || null;
+  }
+
+  async searchMemories(params: SearchParams): Promise<SearchResult[]> {
+    const { query, projectScopeId, mode = "hybrid", limit = 10 } = params;
+    if (!query || query.trim().length === 0) {
+      return [];
+    }
+
+    let candidateMemories = Array.from(this.memories.values());
+    if (projectScopeId) {
+      candidateMemories = candidateMemories.filter(
+        (m) => m.projectScopeId === projectScopeId
+      );
+    }
+
+    const queryVector = generateLocalEmbedding(query);
+    const results: SearchResult[] = [];
+
+    for (const mem of candidateMemories) {
+      const fullText = `${mem.title} ${mem.content} ${mem.tags.join(" ")}`;
+      const keywordScore = calculateKeywordScore(query, fullText);
+
+      let semanticScore = 0;
+      const embedding = this.embeddings.get(mem.id);
+      if (embedding) {
+        semanticScore = cosineSimilarity(queryVector, embedding.vector);
+      }
+
+      let finalScore = 0;
+      let matchType: "keyword" | "semantic" | "hybrid" = "hybrid";
+
+      if (mode === "keyword") {
+        finalScore = keywordScore;
+        matchType = "keyword";
+      } else if (mode === "semantic") {
+        finalScore = semanticScore;
+        matchType = "semantic";
+      } else {
+        // Hybrid mode (Reciprocal / weighted fusion)
+        finalScore = hybridScoreFusion(keywordScore, semanticScore, 0.4);
+        matchType = "hybrid";
+      }
+
+      // Filter threshold
+      if (finalScore > 0.05) {
+        const refs = this.sourceReferences.get(mem.id) || [];
+        results.push({
+          memory: mem,
+          score: Math.round(finalScore * 100) / 100,
+          matchType,
+          sourceReferences: refs,
+        });
+      }
+    }
+
+    // Rank results descending
+    results.sort((a, b) => b.score - a.score);
+    const topResults = results.slice(0, limit);
+
+    // Record retrieval event for audit log
+    if (projectScopeId && topResults.length > 0) {
+      await this.recordRetrievalEvent({
+        id: `ret-${Date.now()}`,
+        query,
+        projectScopeId,
+        matchedMemoryIds: topResults.map((r) => r.memory.id),
+        scores: topResults.map((r) => r.score),
+        clientContext: `mode:${mode}`,
+      });
+    }
+
+    return topResults;
+  }
+
+  async recordRetrievalEvent(
+    event: Omit<RetrievalEvent, "retrievedAt">
+  ): Promise<RetrievalEvent> {
+    const fullEvent: RetrievalEvent = {
+      ...event,
+      retrievedAt: new Date().toISOString(),
+    };
+    this.retrievalEvents.push(fullEvent);
+    return fullEvent;
+  }
+
+  // --- Access Policies ---
   async getAccessPolicy(projectScopeId: string): Promise<AccessPolicy | null> {
     return this.accessPolicies.get(projectScopeId) || null;
   }

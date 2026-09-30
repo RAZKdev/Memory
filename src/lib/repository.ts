@@ -90,6 +90,24 @@ function initializeInMemoryRepo(): MemoryRepository {
         createdAt: new Date().toISOString(),
       },
     ],
+    decisions: [
+      {
+        id: "dec-adr-001",
+        projectScopeId: "proj-agentic-arch",
+        title: "ADR-001: Boundary Port-Adapter Architecture with Immutable History",
+        context:
+          "AI-assisted systems suffer from hallucinated context drift if architectural memories can be silently overwritten or modified without an explicit audit trail.",
+        decisionText:
+          "Adopt Hexagonal/Ports-and-Adapters persistence architecture. Every technical memory must have an immutable Version 1 initial snapshot, monotonic revision increments, and mandatory change rationale.",
+        consequences:
+          "Zero historical data loss; reproducible verification in tests; external databases (Postgres/Supabase) are isolated behind strict repository adapters.",
+        status: "accepted",
+        relatedMemoryIds: ["mem-seed-01"],
+        sourceIds: ["src-rfc-001"],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ],
   });
 
   return repo;

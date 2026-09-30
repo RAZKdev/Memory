@@ -66,19 +66,25 @@ export default function HomePage() {
           <nav className="flex items-center gap-2" aria-label="Main Navigation">
             <Link
               href="/memories"
-              className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-3 py-2 rounded transition-colors"
+              className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-2.5 py-1.5 rounded transition-colors"
             >
-              Memories Workspace
+              Memories
+            </Link>
+            <Link
+              href="/decisions"
+              className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-2.5 py-1.5 rounded transition-colors"
+            >
+              Decisions (ADRs)
             </Link>
             <Link
               href="#domain"
-              className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-3 py-2 rounded transition-colors"
+              className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
               Domain Model
             </Link>
             <Link
               href="#specs"
-              className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-3 py-2 rounded transition-colors"
+              className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
               Specifications
             </Link>
@@ -113,14 +119,14 @@ export default function HomePage() {
               href="/memories"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-accent hover:bg-archive-accentHover text-archive-bg font-semibold text-xs font-mono transition-colors shadow-sm"
             >
-              <span>Open Technical Archive</span>
+              <span>Explore Memories</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
-              href="#domain"
+              href="/decisions"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-subtle hover:bg-archive-border text-archive-primary border border-archive-border text-xs font-mono transition-colors"
             >
-              <span>View Invariants</span>
+              <span>Browse ADRs</span>
             </Link>
           </div>
         </section>

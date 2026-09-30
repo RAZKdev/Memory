@@ -6,10 +6,14 @@
 
 import {
   AccessPolicy,
+  Decision,
+  DecisionStatus,
+  DerivedEmbedding,
   Memory,
   MemoryStatus,
   MemoryVersion,
   ProjectScope,
+  RetrievalEvent,
   Source,
   SourceReference,
 } from "./types";
@@ -34,6 +38,20 @@ export interface MemoryFilter {
   tag?: string;
   status?: MemoryStatus;
   searchQuery?: string;
+}
+
+export interface SearchParams {
+  query: string;
+  projectScopeId?: string;
+  mode?: "hybrid" | "keyword" | "semantic";
+  limit?: number;
+}
+
+export interface SearchResult {
+  memory: Memory;
+  score: number; // 0.0 to 1.0 relevance score
+  matchType: "hybrid" | "keyword" | "semantic";
+  sourceReferences?: SourceReference[];
 }
 
 export interface MemoryRepository {
@@ -62,6 +80,39 @@ export interface MemoryRepository {
   
   // Provenance / Sources
   getSourceReferences(memoryId: string): Promise<SourceReference[]>;
+
+  // Decisions (ADRs)
+  getDecisions(filter?: {
+    projectScopeId?: string;
+    status?: DecisionStatus;
+  }): Promise<Decision[]>;
+  getDecisionById(id: string): Promise<Decision | null>;
+  createDecision(
+    decision: Omit<Decision, "createdAt" | "updatedAt">
+  ): Promise<Decision>;
+  updateDecision(
+    id: string,
+    updates: Partial<
+      Pick<
+        Decision,
+        | "title"
+        | "context"
+        | "decisionText"
+        | "consequences"
+        | "status"
+        | "relatedMemoryIds"
+        | "sourceIds"
+      >
+    >
+  ): Promise<Decision>;
+
+  // Derived Embeddings & Hybrid Search (pgvector integration)
+  storeEmbedding(embedding: DerivedEmbedding): Promise<void>;
+  getEmbedding(memoryId: string): Promise<DerivedEmbedding | null>;
+  searchMemories(params: SearchParams): Promise<SearchResult[]>;
+  recordRetrievalEvent(
+    event: Omit<RetrievalEvent, "retrievedAt">
+  ): Promise<RetrievalEvent>;
 
   // Access Policies
   getAccessPolicy(projectScopeId: string): Promise<AccessPolicy | null>;

@@ -10,19 +10,32 @@ import {
   MemoryFilter,
   MemoryRepository,
   ReviseMemoryParams,
+  SearchParams,
+  SearchResult,
 } from "@/domain/repository";
 import {
   AccessPolicy,
+  Decision,
+  DecisionStatus,
+  DerivedEmbedding,
   Memory,
   MemoryVersion,
   ProjectScope,
+  RetrievalEvent,
   Source,
   SourceReference,
 } from "@/domain/types";
+import {
+  calculateKeywordScore,
+  cosineSimilarity,
+  generateLocalEmbedding,
+  hybridScoreFusion,
+} from "@/domain/vector";
 
 export class SupabaseMemoryRepository implements MemoryRepository {
   constructor(private client: SupabaseClient) {}
 
+  // --- Project Scopes ---
   async getProjectScopes(): Promise<ProjectScope[]> {
     const { data, error } = await this.client
       .from("project_scopes")
@@ -92,6 +105,7 @@ export class SupabaseMemoryRepository implements MemoryRepository {
     };
   }
 
+  // --- Sources ---
   async getSources(projectScopeId?: string): Promise<Source[]> {
     let query = this.client.from("sources").select("*");
     if (projectScopeId) {
@@ -170,6 +184,7 @@ export class SupabaseMemoryRepository implements MemoryRepository {
     };
   }
 
+  // --- Memories ---
   async getMemories(filter?: MemoryFilter): Promise<Memory[]> {
     let query = this.client.from("memories").select("*");
 
@@ -276,6 +291,22 @@ export class SupabaseMemoryRepository implements MemoryRepository {
       if (refError) throw new Error(`Failed to insert source references: ${refError.message}`);
     }
 
+    // 4. Derive and store embedding
+    const vector = generateLocalEmbedding(
+      `${memory.title} ${memory.content} ${memory.tags.join(" ")}`
+    );
+    await this.storeEmbedding({
+      id: `emb-${memory.id}`,
+      memoryId: memory.id,
+      memoryVersion: memory.currentVersion,
+      model: "local-deterministic-v1",
+      vector,
+      dimensions: vector.length,
+      derivedAt: memory.createdAt,
+    }).catch(() => {
+      // Non-fatal if derived_embeddings table does not yet have vector extension enabled
+    });
+
     return memory;
   }
 
@@ -310,6 +341,20 @@ export class SupabaseMemoryRepository implements MemoryRepository {
       reason_for_change: newVersion.reasonForChange,
     });
     if (verError) throw new Error(`Failed to insert memory version: ${verError.message}`);
+
+    // 3. Update derived embedding
+    const vector = generateLocalEmbedding(
+      `${updatedMemory.title} ${updatedMemory.content} ${updatedMemory.tags.join(" ")}`
+    );
+    await this.storeEmbedding({
+      id: `emb-${updatedMemory.id}-v${updatedMemory.currentVersion}`,
+      memoryId: updatedMemory.id,
+      memoryVersion: updatedMemory.currentVersion,
+      model: "local-deterministic-v1",
+      vector,
+      dimensions: vector.length,
+      derivedAt: updatedMemory.updatedAt,
+    }).catch(() => {});
 
     return updatedMemory;
   }
@@ -358,6 +403,270 @@ export class SupabaseMemoryRepository implements MemoryRepository {
     }));
   }
 
+  // --- Decisions (ADRs) ---
+  async getDecisions(filter?: {
+    projectScopeId?: string;
+    status?: DecisionStatus;
+  }): Promise<Decision[]> {
+    let query = this.client.from("decisions").select("*");
+    if (filter?.projectScopeId) {
+      query = query.eq("project_scope_id", filter.projectScopeId);
+    }
+    if (filter?.status) {
+      query = query.eq("status", filter.status);
+    }
+
+    const { data, error } = await query.order("updated_at", { ascending: false });
+    if (error) throw new Error(`Supabase error fetching decisions: ${error.message}`);
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      projectScopeId: row.project_scope_id,
+      title: row.title,
+      context: row.context,
+      decisionText: row.decision_text,
+      consequences: row.consequences,
+      status: row.status,
+      relatedMemoryIds: row.related_memory_ids || [],
+      sourceIds: row.source_ids || [],
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    }));
+  }
+
+  async getDecisionById(id: string): Promise<Decision | null> {
+    const { data, error } = await this.client
+      .from("decisions")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) throw new Error(`Supabase error fetching decision: ${error.message}`);
+    if (!data) return null;
+
+    return {
+      id: data.id,
+      projectScopeId: data.project_scope_id,
+      title: data.title,
+      context: data.context,
+      decisionText: data.decision_text,
+      consequences: data.consequences,
+      status: data.status,
+      relatedMemoryIds: data.related_memory_ids || [],
+      sourceIds: data.source_ids || [],
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
+  }
+
+  async createDecision(
+    decision: Omit<Decision, "createdAt" | "updatedAt">
+  ): Promise<Decision> {
+    const { data, error } = await this.client
+      .from("decisions")
+      .insert({
+        id: decision.id,
+        project_scope_id: decision.projectScopeId,
+        title: decision.title,
+        context: decision.context,
+        decision_text: decision.decisionText,
+        consequences: decision.consequences,
+        status: decision.status,
+        related_memory_ids: decision.relatedMemoryIds,
+        source_ids: decision.sourceIds,
+      })
+      .select()
+      .single();
+
+    if (error) throw new Error(`Supabase error creating decision: ${error.message}`);
+
+    return {
+      id: data.id,
+      projectScopeId: data.project_scope_id,
+      title: data.title,
+      context: data.context,
+      decisionText: data.decision_text,
+      consequences: data.consequences,
+      status: data.status,
+      relatedMemoryIds: data.related_memory_ids || [],
+      sourceIds: data.source_ids || [],
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
+  }
+
+  async updateDecision(
+    id: string,
+    updates: Partial<
+      Pick<
+        Decision,
+        | "title"
+        | "context"
+        | "decisionText"
+        | "consequences"
+        | "status"
+        | "relatedMemoryIds"
+        | "sourceIds"
+      >
+    >
+  ): Promise<Decision> {
+    const payload: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+    if (updates.title !== undefined) payload.title = updates.title;
+    if (updates.context !== undefined) payload.context = updates.context;
+    if (updates.decisionText !== undefined) payload.decision_text = updates.decisionText;
+    if (updates.consequences !== undefined) payload.consequences = updates.consequences;
+    if (updates.status !== undefined) payload.status = updates.status;
+    if (updates.relatedMemoryIds !== undefined) payload.related_memory_ids = updates.relatedMemoryIds;
+    if (updates.sourceIds !== undefined) payload.source_ids = updates.sourceIds;
+
+    const { data, error } = await this.client
+      .from("decisions")
+      .update(payload)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw new Error(`Supabase error updating decision: ${error.message}`);
+
+    return {
+      id: data.id,
+      projectScopeId: data.project_scope_id,
+      title: data.title,
+      context: data.context,
+      decisionText: data.decision_text,
+      consequences: data.consequences,
+      status: data.status,
+      relatedMemoryIds: data.related_memory_ids || [],
+      sourceIds: data.source_ids || [],
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
+  }
+
+  // --- Derived Embeddings & Hybrid Search Engine ---
+  async storeEmbedding(embedding: DerivedEmbedding): Promise<void> {
+    const { error } = await this.client.from("derived_embeddings").upsert({
+      id: embedding.id,
+      memory_id: embedding.memoryId,
+      memory_version: embedding.memoryVersion,
+      model: embedding.model,
+      vector: embedding.vector,
+      dimensions: embedding.dimensions,
+    });
+
+    if (error) {
+      console.warn("Could not upsert embedding into Supabase:", error.message);
+    }
+  }
+
+  async getEmbedding(memoryId: string): Promise<DerivedEmbedding | null> {
+    const { data, error } = await this.client
+      .from("derived_embeddings")
+      .select("*")
+      .eq("memory_id", memoryId)
+      .maybeSingle();
+
+    if (error || !data) return null;
+
+    return {
+      id: data.id,
+      memoryId: data.memory_id,
+      memoryVersion: data.memory_version,
+      model: data.model,
+      vector: data.vector,
+      dimensions: data.dimensions,
+      derivedAt: data.derived_at,
+    };
+  }
+
+  async searchMemories(params: SearchParams): Promise<SearchResult[]> {
+    const { query, projectScopeId, mode = "hybrid", limit = 10 } = params;
+    if (!query || query.trim().length === 0) return [];
+
+    // Fetch candidate memories
+    const memories = await this.getMemories({ projectScopeId });
+    const queryVector = generateLocalEmbedding(query);
+    const results: SearchResult[] = [];
+
+    for (const mem of memories) {
+      const fullText = `${mem.title} ${mem.content} ${mem.tags.join(" ")}`;
+      const keywordScore = calculateKeywordScore(query, fullText);
+
+      let semanticScore = 0;
+      const embedding = await this.getEmbedding(mem.id);
+      if (embedding && embedding.vector) {
+        semanticScore = cosineSimilarity(queryVector, embedding.vector);
+      } else {
+        const memVector = generateLocalEmbedding(fullText);
+        semanticScore = cosineSimilarity(queryVector, memVector);
+      }
+
+      let finalScore = 0;
+      let matchType: "keyword" | "semantic" | "hybrid" = "hybrid";
+
+      if (mode === "keyword") {
+        finalScore = keywordScore;
+        matchType = "keyword";
+      } else if (mode === "semantic") {
+        finalScore = semanticScore;
+        matchType = "semantic";
+      } else {
+        finalScore = hybridScoreFusion(keywordScore, semanticScore, 0.4);
+        matchType = "hybrid";
+      }
+
+      if (finalScore > 0.05) {
+        const refs = await this.getSourceReferences(mem.id);
+        results.push({
+          memory: mem,
+          score: Math.round(finalScore * 100) / 100,
+          matchType,
+          sourceReferences: refs,
+        });
+      }
+    }
+
+    results.sort((a, b) => b.score - a.score);
+    const topResults = results.slice(0, limit);
+
+    if (projectScopeId && topResults.length > 0) {
+      await this.recordRetrievalEvent({
+        id: `ret-${Date.now()}`,
+        query,
+        projectScopeId,
+        matchedMemoryIds: topResults.map((r) => r.memory.id),
+        scores: topResults.map((r) => r.score),
+        clientContext: `mode:${mode}`,
+      });
+    }
+
+    return topResults;
+  }
+
+  async recordRetrievalEvent(
+    event: Omit<RetrievalEvent, "retrievedAt">
+  ): Promise<RetrievalEvent> {
+    const fullEvent: RetrievalEvent = {
+      ...event,
+      retrievedAt: new Date().toISOString(),
+    };
+
+    await this.client.from("retrieval_events").insert({
+      id: fullEvent.id,
+      query: fullEvent.query,
+      project_scope_id: fullEvent.projectScopeId,
+      matched_memory_ids: fullEvent.matchedMemoryIds,
+      scores: fullEvent.scores,
+      client_context: fullEvent.clientContext,
+    });
+
+    return fullEvent;
+  }
+
+  // --- Access Policies ---
   async getAccessPolicy(projectScopeId: string): Promise<AccessPolicy | null> {
     const { data, error } = await this.client
       .from("access_policies")

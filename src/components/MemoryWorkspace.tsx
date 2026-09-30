@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { Memory, MemoryVersion, ProjectScope, SourceReference, Source } from "@/domain/types";
 import { CreateMemoryModal } from "./CreateMemoryModal";
 import { ReviseMemoryModal } from "./ReviseMemoryModal";
+import { HybridSearchModal } from "./HybridSearchModal";
 import {
   Archive,
   Plus,
@@ -50,6 +52,7 @@ export function MemoryWorkspace({
   // Modals state
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [isReviseOpen, setIsReviseOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   // Fetch memory list with filter
   async function refreshMemories() {
@@ -135,7 +138,21 @@ export function MemoryWorkspace({
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
+            <Link
+              href="/decisions"
+              className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
+            >
+              ADRs & Decisions
+            </Link>
+            <button
+              type="button"
+              onClick={() => setIsSearchOpen(true)}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-archive-subtle hover:bg-archive-border border border-archive-border text-archive-secondary hover:text-archive-primary rounded text-xs font-mono transition-colors cursor-pointer"
+            >
+              <Search className="w-3.5 h-3.5 text-archive-muted" />
+              <span>Hybrid Search</span>
+            </button>
             <button
               type="button"
               onClick={() => setIsCreateOpen(true)}
@@ -479,6 +496,14 @@ export function MemoryWorkspace({
           }
         }}
         memory={activeMemory}
+      />
+
+      {/* Global Hybrid Search Engine Modal */}
+      <HybridSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelectMemory={(id) => setSelectedMemoryId(id)}
+        projectScopes={projects}
       />
     </div>
   );
