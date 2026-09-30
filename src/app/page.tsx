@@ -65,6 +65,12 @@ export default function HomePage() {
 
           <nav className="flex items-center gap-2" aria-label="Main Navigation">
             <Link
+              href="/memories"
+              className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-3 py-2 rounded transition-colors"
+            >
+              Memories Workspace
+            </Link>
+            <Link
               href="#domain"
               className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-3 py-2 rounded transition-colors"
             >
@@ -77,13 +83,13 @@ export default function HomePage() {
               Specifications
             </Link>
             <div className="h-4 w-px bg-archive-border mx-1" />
-            <button
-              type="button"
+            <Link
+              href="/memories"
               className="inline-flex items-center gap-1.5 text-xs font-medium text-archive-primary bg-archive-subtle hover:bg-archive-border/60 border border-archive-border px-3 py-1.5 rounded transition-all cursor-pointer"
             >
-              <Search className="w-3.5 h-3.5 text-archive-muted" />
-              <span>Search Archive</span>
-            </button>
+              <Archive className="w-3.5 h-3.5 text-archive-accent" />
+              <span>Launch Archive</span>
+            </Link>
           </nav>
         </div>
       </header>
@@ -102,6 +108,21 @@ export default function HomePage() {
             Preserving project decisions, technical notes, and verified source
             provenance for AI-assisted engineering with zero hallucinations.
           </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link
+              href="/memories"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-accent hover:bg-archive-accentHover text-archive-bg font-semibold text-xs font-mono transition-colors shadow-sm"
+            >
+              <span>Open Technical Archive</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+            <Link
+              href="#domain"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-subtle hover:bg-archive-border text-archive-primary border border-archive-border text-xs font-mono transition-colors"
+            >
+              <span>View Invariants</span>
+            </Link>
+          </div>
         </section>
 
         {/* Core Entities Grid */}
