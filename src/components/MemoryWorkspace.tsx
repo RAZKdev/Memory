@@ -145,6 +145,12 @@ export function MemoryWorkspace({
             >
               ADRs & Decisions
             </Link>
+            <Link
+              href="/collections"
+              className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
+            >
+              Collections
+            </Link>
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}

@@ -15,6 +15,7 @@ import {
 } from "@/domain/repository";
 import {
   AccessPolicy,
+  Collection,
   Decision,
   DecisionStatus,
   DerivedEmbedding,
@@ -664,6 +665,121 @@ export class SupabaseMemoryRepository implements MemoryRepository {
     });
 
     return fullEvent;
+  }
+
+  // --- Collections (Thematic Groups of Memories & Decisions) ---
+  async getCollections(filter?: { projectScopeId?: string }): Promise<Collection[]> {
+    let query = this.client.from("collections").select("*");
+    if (filter?.projectScopeId) {
+      query = query.eq("project_scope_id", filter.projectScopeId);
+    }
+
+    const { data, error } = await query.order("updated_at", { ascending: false });
+    if (error) throw new Error(`Supabase error fetching collections: ${error.message}`);
+    if (!data) return [];
+
+    return data.map((row) => ({
+      id: row.id,
+      projectScopeId: row.project_scope_id,
+      title: row.title,
+      description: row.description,
+      memoryIds: row.memory_ids || [],
+      decisionIds: row.decision_ids || [],
+      createdAt: row.created_at,
+      updatedAt: row.updated_at,
+    }));
+  }
+
+  async getCollectionById(id: string): Promise<Collection | null> {
+    const { data, error } = await this.client
+      .from("collections")
+      .select("*")
+      .eq("id", id)
+      .maybeSingle();
+
+    if (error) throw new Error(`Supabase error fetching collection: ${error.message}`);
+    if (!data) return null;
+
+    return {
+      id: data.id,
+      projectScopeId: data.project_scope_id,
+      title: data.title,
+      description: data.description,
+      memoryIds: data.memory_ids || [],
+      decisionIds: data.decision_ids || [],
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
+  }
+
+  async createCollection(
+    collection: Omit<Collection, "createdAt" | "updatedAt">
+  ): Promise<Collection> {
+    const { data, error } = await this.client
+      .from("collections")
+      .insert({
+        id: collection.id,
+        project_scope_id: collection.projectScopeId,
+        title: collection.title,
+        description: collection.description,
+        memory_ids: collection.memoryIds,
+        decision_ids: collection.decisionIds || [],
+      })
+      .select()
+      .single();
+
+    if (error) throw new Error(`Supabase error creating collection: ${error.message}`);
+
+    return {
+      id: data.id,
+      projectScopeId: data.project_scope_id,
+      title: data.title,
+      description: data.description,
+      memoryIds: data.memory_ids || [],
+      decisionIds: data.decision_ids || [],
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
+  }
+
+  async updateCollection(
+    id: string,
+    updates: Partial<
+      Pick<Collection, "title" | "description" | "memoryIds" | "decisionIds">
+    >
+  ): Promise<Collection> {
+    const payload: Record<string, unknown> = {
+      updated_at: new Date().toISOString(),
+    };
+    if (updates.title !== undefined) payload.title = updates.title;
+    if (updates.description !== undefined) payload.description = updates.description;
+    if (updates.memoryIds !== undefined) payload.memory_ids = updates.memoryIds;
+    if (updates.decisionIds !== undefined) payload.decision_ids = updates.decisionIds;
+
+    const { data, error } = await this.client
+      .from("collections")
+      .update(payload)
+      .eq("id", id)
+      .select()
+      .single();
+
+    if (error) throw new Error(`Supabase error updating collection: ${error.message}`);
+
+    return {
+      id: data.id,
+      projectScopeId: data.project_scope_id,
+      title: data.title,
+      description: data.description,
+      memoryIds: data.memory_ids || [],
+      decisionIds: data.decision_ids || [],
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    };
+  }
+
+  async deleteCollection(id: string): Promise<void> {
+    const { error } = await this.client.from("collections").delete().eq("id", id);
+    if (error) throw new Error(`Supabase error deleting collection: ${error.message}`);
   }
 
   // --- Access Policies ---

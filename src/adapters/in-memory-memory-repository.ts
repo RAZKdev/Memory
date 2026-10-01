@@ -14,6 +14,7 @@ import {
 } from "@/domain/repository";
 import {
   AccessPolicy,
+  Collection,
   Decision,
   DecisionStatus,
   DerivedEmbedding,
@@ -39,6 +40,7 @@ export class InMemoryMemoryRepository implements MemoryRepository {
   private sourceReferences = new Map<string, SourceReference[]>(); // memoryId -> SourceReference[]
   private accessPolicies = new Map<string, AccessPolicy>(); // projectScopeId -> AccessPolicy
   private decisions = new Map<string, Decision>(); // decisionId -> Decision
+  private collections = new Map<string, Collection>(); // collectionId -> Collection
   private embeddings = new Map<string, DerivedEmbedding>(); // memoryId -> DerivedEmbedding
   private retrievalEvents: RetrievalEvent[] = [];
 
@@ -50,10 +52,16 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     sourceReferences?: SourceReference[];
     accessPolicies?: AccessPolicy[];
     decisions?: Decision[];
+    collections?: Collection[];
   }) {
     if (initialData?.projectScopes) {
       for (const p of initialData.projectScopes) {
         this.projectScopes.set(p.id, p);
+      }
+    }
+    if (initialData?.collections) {
+      for (const c of initialData.collections) {
+        this.collections.set(c.id, c);
       }
     }
     if (initialData?.sources) {
@@ -416,6 +424,59 @@ export class InMemoryMemoryRepository implements MemoryRepository {
     };
     this.retrievalEvents.push(fullEvent);
     return fullEvent;
+  }
+
+  // --- Collections (Thematic Groups of Memories & Decisions) ---
+  async getCollections(filter?: { projectScopeId?: string }): Promise<Collection[]> {
+    let list = Array.from(this.collections.values());
+    if (filter?.projectScopeId) {
+      list = list.filter((c) => c.projectScopeId === filter.projectScopeId);
+    }
+    return list.sort(
+      (a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  }
+
+  async getCollectionById(id: string): Promise<Collection | null> {
+    return this.collections.get(id) || null;
+  }
+
+  async createCollection(
+    collection: Omit<Collection, "createdAt" | "updatedAt">
+  ): Promise<Collection> {
+    const timestamp = new Date().toISOString();
+    const created: Collection = {
+      ...collection,
+      createdAt: timestamp,
+      updatedAt: timestamp,
+    };
+    this.collections.set(created.id, created);
+    return created;
+  }
+
+  async updateCollection(
+    id: string,
+    updates: Partial<
+      Pick<Collection, "title" | "description" | "memoryIds" | "decisionIds">
+    >
+  ): Promise<Collection> {
+    const existing = this.collections.get(id);
+    if (!existing) {
+      throw new Error(`Collection with ID '${id}' not found.`);
+    }
+
+    const updated: Collection = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date().toISOString(),
+    };
+    this.collections.set(id, updated);
+    return updated;
+  }
+
+  async deleteCollection(id: string): Promise<void> {
+    this.collections.delete(id);
   }
 
   // --- Access Policies ---

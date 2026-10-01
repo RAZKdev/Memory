@@ -139,7 +139,13 @@ export function DecisionsWorkspace({
               href="/memories"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Memories Archive
+              Memories
+            </Link>
+            <Link
+              href="/collections"
+              className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
+            >
+              Collections
             </Link>
             <button
               type="button"

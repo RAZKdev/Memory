@@ -115,8 +115,49 @@ export interface Collection {
   title: string;
   description?: string;
   memoryIds: string[];
+  decisionIds?: string[];
   createdAt: ISO8601String;
   updatedAt: ISO8601String;
+}
+
+export type ExportFormat = "markdown" | "json" | "xml";
+
+export interface ContextExportItem {
+  id: string;
+  title: string;
+  currentVersion: number;
+  confidence: number;
+  tags: string[];
+  content: string;
+  provenanceCitations?: Array<{
+    title: string;
+    snippet?: string;
+    location?: string;
+    uri?: string;
+  }>;
+}
+
+export interface ContextExportDecision {
+  id: string;
+  title: string;
+  status: DecisionStatus;
+  context: string;
+  decisionText: string;
+  consequences?: string;
+}
+
+export interface ContextExportBundle {
+  exportId: string;
+  exportedAt: ISO8601String;
+  collectionId?: string;
+  collectionTitle?: string;
+  projectScopeId: string;
+  projectScopeName?: string;
+  tokenEstimate: number;
+  format: ExportFormat;
+  memories: ContextExportItem[];
+  decisions: ContextExportDecision[];
+  formattedOutput: string;
 }
 
 export interface Decision {

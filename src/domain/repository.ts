@@ -6,6 +6,7 @@
 
 import {
   AccessPolicy,
+  Collection,
   Decision,
   DecisionStatus,
   DerivedEmbedding,
@@ -113,6 +114,20 @@ export interface MemoryRepository {
   recordRetrievalEvent(
     event: Omit<RetrievalEvent, "retrievedAt">
   ): Promise<RetrievalEvent>;
+
+  // Collections (Thematic Groups of Memories & Decisions)
+  getCollections(filter?: { projectScopeId?: string }): Promise<Collection[]>;
+  getCollectionById(id: string): Promise<Collection | null>;
+  createCollection(
+    collection: Omit<Collection, "createdAt" | "updatedAt">
+  ): Promise<Collection>;
+  updateCollection(
+    id: string,
+    updates: Partial<
+      Pick<Collection, "title" | "description" | "memoryIds" | "decisionIds">
+    >
+  ): Promise<Collection>;
+  deleteCollection(id: string): Promise<void>;
 
   // Access Policies
   getAccessPolicy(projectScopeId: string): Promise<AccessPolicy | null>;

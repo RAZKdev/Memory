@@ -108,6 +108,19 @@ function initializeInMemoryRepo(): MemoryRepository {
         updatedAt: new Date().toISOString(),
       },
     ],
+    collections: [
+      {
+        id: "col-agentic-core",
+        projectScopeId: "proj-agentic-arch",
+        title: "Agentic Determinism & Boundary Invariants",
+        description:
+          "Authoritative context bundle containing core state transitions, port-adapter persistence, and audit logging rules.",
+        memoryIds: ["mem-seed-01"],
+        decisionIds: ["dec-adr-001"],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+    ],
   });
 
   return repo;
