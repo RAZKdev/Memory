@@ -83,6 +83,12 @@ export default function HomePage() {
               Collections & AI Export
             </Link>
             <Link
+              href="/projects"
+              className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-2.5 py-1.5 rounded transition-colors"
+            >
+              Projects & Governance
+            </Link>
+            <Link
               href="#domain"
               className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
@@ -139,6 +145,12 @@ export default function HomePage() {
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-subtle hover:bg-archive-border text-archive-accent border border-archive-border text-xs font-mono transition-colors"
             >
               <span>AI Context Bundles</span>
+            </Link>
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-subtle hover:bg-archive-border text-archive-secondary hover:text-archive-primary border border-archive-border text-xs font-mono transition-colors"
+            >
+              <span>Scopes & Policies</span>
             </Link>
           </div>
         </section>

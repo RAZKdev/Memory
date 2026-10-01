@@ -147,3 +147,8 @@ export function getRepository(): MemoryRepository {
   global.__memoryVaultRepo = inMemory;
   return inMemory;
 }
+
+export function resetRepositoryForTesting(): void {
+  global.__memoryVaultRepo = undefined;
+}
+
