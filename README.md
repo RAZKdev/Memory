@@ -145,27 +145,39 @@ npm run test:e2e
 - Mobile Chrome Android-class viewport (375x667)
 - Verifies: navigation, memory preservation, ADR creation, collections prompt export, access policy changes, hybrid search modal, and zero horizontal document overflow.
 
+### Continuous Integration (GitHub Actions)
+
+MemoryVault includes an automated multi-stage CI pipeline defined in [`.github/workflows/ci.yml`](file:///.github/workflows/ci.yml) that executes on every push and pull request:
+1. **`unit-and-integration`**: Runs Vitest suite (30 tests) and verifies Next.js production compilation.
+2. **`e2e-and-visual-qa`**: Installs Playwright Chromium with system dependencies, builds the production app, and executes all 14 E2E/responsive tests across desktop and mobile viewports.
+
 ---
 
 ## 6. Supabase & PostgreSQL Configuration (Production)
 
 To connect MemoryVault to a real PostgreSQL instance:
 
-1. Create a Supabase project (or standard PostgreSQL instance with `pgvector`).
-2. Run database migrations in order:
+1. Create a Supabase project (or standard PostgreSQL instance with `pgvector` enabled).
+2. Configure `.env.local` by copying `.env.example`:
    ```bash
-   # In Supabase SQL Editor:
-   1. supabase/migrations/001_initial_schema.sql
-   2. supabase/migrations/002_decisions_and_retrieval.sql
-   3. supabase/migrations/003_collections.sql
+   cp .env.example .env.local
    ```
-3. Set environment variables in `.env.local`:
+   Fill in your credentials:
    ```bash
-   NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-   SUPABASE_SERVICE_ROLE_KEY=your-supabase-service-role-key
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+   NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+   SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+   DATABASE_URL=postgresql://postgres.your-project-id:[PASSWORD]@aws-0-region.pooler.supabase.com:6543/postgres?sslmode=require
    ```
-4. Restart the server. MemoryVault automatically activates `SupabaseMemoryRepository`.
+3. Run database migrations:
+   - **Automated CLI Runner** (Recommended):
+     ```bash
+     npm run db:migrate
+     ```
+     *Applies `001_initial_schema.sql`, `002_decisions_and_retrieval.sql`, and `003_collections.sql` in sequence and tracks them in `_schema_migrations`.*
+   - **Manual Supabase SQL Editor**:
+     Execute the migration scripts in numerical sequence directly in the Supabase Dashboard.
+4. Restart the development server. MemoryVault automatically detects the credentials and activates `SupabaseMemoryRepository`.
 
 ---
 
