@@ -101,9 +101,11 @@ npm install
 
 By default, MemoryVault runs out-of-the-box using the built-in **In-Memory Repository**. No external database or credentials are required:
 
-```bash
-npm run dev
-```
+- **Windows 1-Click Launcher**: Double-click `start.bat` to verify Node.js, install dependencies (if missing), boot the Next.js server, and automatically launch your browser.
+- **Manual CLI**:
+  ```bash
+  npm run dev
+  ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser:
 - **Landing Page**: [http://localhost:3000/](http://localhost:3000/)
