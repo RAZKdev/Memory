@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "MemoryVault — Private Technical Context & Memory System",
+  title: "MemoryVault — Sistem Konteks & Memori Teknis",
   description:
-    "Private cross-project context/memory system for preserving project decisions, notes, useful context and source references for AI-assisted work.",
+    "Sistem memori dan konteks teknis privat lintas proyek untuk mendokumentasikan keputusan arsitektural, catatan teknis, dan sumber rujukan AI tanpa halusinasi.",
 };
 
 export const viewport: Viewport = {
@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="id" className="dark">
       <body className="bg-archive-bg text-archive-primary antialiased min-h-screen flex flex-col">
         {children}
       </body>

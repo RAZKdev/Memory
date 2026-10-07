@@ -88,19 +88,25 @@ export function DecisionsWorkspace({
       case "accepted":
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-archive-emerald/10 border border-archive-emerald/30 text-archive-emerald font-semibold uppercase">
-            Accepted
+            Diterima (Accepted)
           </span>
         );
       case "proposed":
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-archive-amber/10 border border-archive-amber/30 text-archive-amber font-semibold uppercase">
-            Proposed
+            Diusulkan (Proposed)
           </span>
         );
       case "rejected":
         return (
           <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-archive-rose/10 border border-archive-rose/30 text-archive-rose font-semibold uppercase">
-            Rejected
+            Ditolak (Rejected)
+          </span>
+        );
+      case "deprecated":
+        return (
+          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-archive-subtle border border-archive-border text-archive-muted uppercase font-semibold">
+            Usang (Deprecated)
           </span>
         );
       default:
@@ -111,6 +117,13 @@ export function DecisionsWorkspace({
         );
     }
   }
+
+  const statusOptions = [
+    { value: "all", label: "Semua" },
+    { value: "accepted", label: "Diterima" },
+    { value: "proposed", label: "Diusulkan" },
+    { value: "deprecated", label: "Usang" },
+  ];
 
   return (
     <div className="flex-1 flex flex-col min-h-screen bg-archive-bg text-archive-primary">
@@ -129,7 +142,7 @@ export function DecisionsWorkspace({
                 MemoryVault
               </span>
               <span className="ml-2 text-xs font-mono text-archive-muted">
-                / Architectural Decisions (ADRs)
+                / Keputusan Arsitektural (ADR)
               </span>
             </div>
           </div>
@@ -139,19 +152,19 @@ export function DecisionsWorkspace({
               href="/memories"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Memories
+              Memori
             </Link>
             <Link
               href="/collections"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Collections
+              Koleksi
             </Link>
             <Link
               href="/projects"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Projects
+              Proyek
             </Link>
             <button
               type="button"
@@ -159,7 +172,7 @@ export function DecisionsWorkspace({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-archive-subtle hover:bg-archive-border border border-archive-border text-archive-secondary hover:text-archive-primary rounded text-xs font-mono transition-colors cursor-pointer"
             >
               <Search className="w-3.5 h-3.5 text-archive-muted" />
-              <span>Hybrid Search</span>
+              <span>Pencarian Hybrid</span>
             </button>
             <button
               type="button"
@@ -167,7 +180,7 @@ export function DecisionsWorkspace({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-archive-accent hover:bg-archive-accentHover text-archive-bg rounded text-xs font-semibold font-mono transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Record ADR</span>
+              <span>Catat ADR</span>
             </button>
           </div>
         </div>
@@ -184,7 +197,7 @@ export function DecisionsWorkspace({
           <div className="space-y-1.5">
             <label htmlFor="decision-scope-filter" className="text-xs font-mono text-archive-muted flex items-center gap-1.5">
               <Filter className="w-3 h-3 text-archive-accent" />
-              <span>Filter by Project Scope</span>
+              <span>Filter Berdasarkan Scope Proyek</span>
             </label>
             <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
               <button
@@ -196,7 +209,7 @@ export function DecisionsWorkspace({
                     : "bg-archive-subtle text-archive-secondary hover:text-archive-primary border border-archive-border"
                 }`}
               >
-                All Scopes
+                Semua Scope
               </button>
               {projects.map((p) => (
                 <button
@@ -218,18 +231,18 @@ export function DecisionsWorkspace({
           {/* ADR Status Filter */}
           <div className="flex items-center gap-2 text-xs font-mono">
             <span className="text-archive-muted">Status:</span>
-            {["all", "accepted", "proposed", "deprecated"].map((st) => (
+            {statusOptions.map((opt) => (
               <button
-                key={st}
+                key={opt.value}
                 type="button"
-                onClick={() => setSelectedStatus(st)}
-                className={`px-2 py-0.5 rounded cursor-pointer capitalize ${
-                  selectedStatus === st
+                onClick={() => setSelectedStatus(opt.value)}
+                className={`px-2 py-0.5 rounded cursor-pointer ${
+                  selectedStatus === opt.value
                     ? "bg-archive-card border border-archive-accent text-archive-accent font-semibold"
                     : "text-archive-muted hover:text-archive-secondary"
                 }`}
               >
-                {st}
+                {opt.label}
               </button>
             ))}
           </div>
@@ -239,9 +252,9 @@ export function DecisionsWorkspace({
             {decisions.length === 0 ? (
               <div className="p-8 text-center rounded border border-archive-border bg-archive-card/40">
                 <GitBranch className="w-8 h-8 text-archive-muted mx-auto mb-2 opacity-50" />
-                <p className="text-xs font-mono text-archive-secondary">No decision records found</p>
+                <p className="text-xs font-mono text-archive-secondary">Belum ada keputusan tercatat</p>
                 <p className="text-[11px] text-archive-muted mt-1">
-                  Record an ADR to preserve critical architectural rationale.
+                  Catat keputusan arsitektural untuk melacak pertimbangan teknis.
                 </p>
               </div>
             ) : (
@@ -273,7 +286,7 @@ export function DecisionsWorkspace({
                     </p>
 
                     <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-archive-border/40 text-[10px] font-mono text-archive-muted">
-                      <span>{d.relatedMemoryIds.length} Linked Memories</span>
+                      <span>{d.relatedMemoryIds.length} Memori Tertaut</span>
                       <span>{new Date(d.updatedAt).toLocaleDateString()}</span>
                     </div>
                   </div>
@@ -293,10 +306,10 @@ export function DecisionsWorkspace({
             <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
               <GitBranch className="w-12 h-12 text-archive-muted/40 mb-3" />
               <h2 className="text-sm font-semibold text-archive-secondary font-mono">
-                Select an ADR to Inspect
+                Pilih Catatan Keputusan untuk Diperiksa
               </h2>
               <p className="text-xs text-archive-muted max-w-sm mt-1">
-                View architectural context, rationale, consequences, and linked grounding memories.
+                Lihat konteks, trade-off, dan memori teknis yang tertaut secara deterministik.
               </p>
             </div>
           ) : (
@@ -324,7 +337,7 @@ export function DecisionsWorkspace({
               {/* Context Section */}
               <div className="p-6 border-b border-archive-border space-y-2">
                 <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted">
-                  Context & Architectural Tension
+                  Konteks & Latar Belakang Masalah
                 </h2>
                 <div className="p-3.5 rounded bg-archive-subtle/40 border border-archive-border font-mono text-xs md:text-sm text-archive-secondary leading-relaxed">
                   {activeDecision.context}
@@ -336,7 +349,7 @@ export function DecisionsWorkspace({
                 <div className="flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4 text-archive-emerald" />
                   <h2 className="text-xs font-mono uppercase tracking-wider text-archive-emerald font-semibold">
-                    Decision Taken
+                    Keputusan yang Diambil
                   </h2>
                 </div>
                 <div className="p-4 rounded-lg bg-archive-bg border border-archive-border font-mono text-xs md:text-sm text-archive-primary leading-relaxed whitespace-pre-wrap">
@@ -348,7 +361,7 @@ export function DecisionsWorkspace({
               {activeDecision.consequences && (
                 <div className="p-6 border-b border-archive-border space-y-2">
                   <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted">
-                    Consequences & Trade-offs
+                    Konsekuensi & Trade-off
                   </h2>
                   <div className="p-3.5 rounded bg-archive-subtle/40 border border-archive-border font-mono text-xs md:text-sm text-archive-secondary leading-relaxed">
                     {activeDecision.consequences}
@@ -361,13 +374,13 @@ export function DecisionsWorkspace({
                 <div className="flex items-center gap-2 mb-3">
                   <Archive className="w-4 h-4 text-archive-accent" />
                   <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted">
-                    Grounding Technical Memories ({activeDecision.relatedMemoryIds.length})
+                    Memori Teknis Tertaut ({activeDecision.relatedMemoryIds.length})
                   </h2>
                 </div>
 
                 {activeDecision.relatedMemoryIds.length === 0 ? (
                   <p className="text-xs font-mono text-archive-muted italic">
-                    No individual memories linked to this ADR yet.
+                    Belum ada memori teknis yang ditautkan ke ADR ini.
                   </p>
                 ) : (
                   <div className="grid grid-cols-1 gap-2.5">
@@ -380,11 +393,11 @@ export function DecisionsWorkspace({
                         >
                           <div>
                             <span className="font-semibold text-archive-primary block">
-                              {mem ? mem.title : `Memory: ${mId}`}
+                              {mem ? mem.title : `Memori: ${mId}`}
                             </span>
                             {mem && (
                               <span className="text-[11px] text-archive-muted">
-                                v{mem.currentVersion} • {(mem.confidence * 100).toFixed(0)}% confidence
+                                v{mem.currentVersion} • {(mem.confidence * 100).toFixed(0)}% keyakinan
                               </span>
                             )}
                           </div>
@@ -392,7 +405,7 @@ export function DecisionsWorkspace({
                             href="/memories"
                             className="text-archive-accent hover:underline inline-flex items-center gap-1 text-[11px]"
                           >
-                            <span>Inspect</span>
+                            <span>Periksa</span>
                             <ArrowRight className="w-3 h-3" />
                           </Link>
                         </div>

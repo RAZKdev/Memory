@@ -47,15 +47,15 @@ export function CreateMemoryModal({
     setErrorMessage(null);
 
     if (!title.trim()) {
-      setErrorMessage("Title is required.");
+      setErrorMessage("Judul wajib diisi.");
       return;
     }
     if (!content.trim()) {
-      setErrorMessage("Content is required.");
+      setErrorMessage("Konten wajib diisi.");
       return;
     }
     if (!projectScopeId) {
-      setErrorMessage("Please select a project scope.");
+      setErrorMessage("Pilih scope proyek terlebih dahulu.");
       return;
     }
 
@@ -91,7 +91,7 @@ export function CreateMemoryModal({
 
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Failed to create memory");
+        throw new Error(json.error || "Gagal membuat memori");
       }
 
       // Reset & notify
@@ -105,7 +105,7 @@ export function CreateMemoryModal({
       onSuccess();
       onClose();
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "An unexpected error occurred");
+      setErrorMessage(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diharapkan");
     } finally {
       setIsLoading(false);
     }
@@ -123,16 +123,16 @@ export function CreateMemoryModal({
         <div className="flex items-center justify-between px-6 py-4 border-b border-archive-border">
           <div>
             <h2 id="modal-create-title" className="text-base font-semibold text-archive-primary font-mono">
-              Preserve Technical Memory
+              Simpan Memori Teknis
             </h2>
             <p className="text-xs text-archive-muted mt-0.5">
-              Record a canonical context item with immutable Version 1 snapshot.
+              Catat unit konteks kanonikal dengan snapshot Versi 1 yang kekal.
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Tutup modal"
             className="text-archive-secondary hover:text-archive-primary p-1.5 rounded hover:bg-archive-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -151,7 +151,7 @@ export function CreateMemoryModal({
           {/* Project Scope Selection */}
           <div>
             <label htmlFor="create-project-scope" className="block text-xs font-mono text-archive-secondary mb-1">
-              Project Scope (Boundary) *
+              Scope Proyek (Batasan) *
             </label>
             <select
               id="create-project-scope"
@@ -171,12 +171,12 @@ export function CreateMemoryModal({
           {/* Title */}
           <div>
             <label htmlFor="create-title" className="block text-xs font-mono text-archive-secondary mb-1">
-              Memory Title *
+              Judul Memori *
             </label>
             <input
               id="create-title"
               type="text"
-              placeholder="e.g. Supabase Cookie Delegation Pattern"
+              placeholder="contoh: Pola Delegasi Cookie Supabase"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none"
@@ -187,12 +187,12 @@ export function CreateMemoryModal({
           {/* Content */}
           <div>
             <label htmlFor="create-content" className="block text-xs font-mono text-archive-secondary mb-1">
-              Technical Content & Context *
+              Konten & Konteks Teknis *
             </label>
             <textarea
               id="create-content"
               rows={5}
-              placeholder="Describe the technical decision, pattern, or invariant in detail..."
+              placeholder="Jelaskan keputusan teknis, pola arsitektur, atau invarian secara rinci..."
               value={content}
               onChange={(e) => setContent(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
@@ -204,7 +204,7 @@ export function CreateMemoryModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <div className="flex justify-between text-xs font-mono text-archive-secondary mb-1">
-                <label htmlFor="create-confidence">Confidence Score: {(confidence * 100).toFixed(0)}%</label>
+                <label htmlFor="create-confidence">Skor Keyakinan: {(confidence * 100).toFixed(0)}%</label>
               </div>
               <input
                 id="create-confidence"
@@ -219,7 +219,7 @@ export function CreateMemoryModal({
             </div>
             <div>
               <label htmlFor="create-author" className="block text-xs font-mono text-archive-secondary mb-1">
-                Author / Engineer ID
+                ID Penulis / Perekayasa
               </label>
               <input
                 id="create-author"
@@ -234,7 +234,7 @@ export function CreateMemoryModal({
           {/* Tags */}
           <div>
             <label htmlFor="create-tags" className="block text-xs font-mono text-archive-secondary mb-1">
-              Tags (comma separated)
+              Tag (pisahkan dengan koma)
             </label>
             <input
               id="create-tags"
@@ -254,7 +254,7 @@ export function CreateMemoryModal({
               className="inline-flex items-center gap-2 text-xs font-mono text-archive-accent hover:text-archive-accentHover transition-colors cursor-pointer"
             >
               <Plus className={`w-3.5 h-3.5 transition-transform ${withSource ? "rotate-45" : ""}`} />
-              <span>{withSource ? "Remove source citation" : "Attach source provenance citation"}</span>
+              <span>{withSource ? "Hapus sitasi sumber rujukan" : "Tautkan sitasi sumber rujukan"}</span>
             </button>
           </div>
 
@@ -263,12 +263,12 @@ export function CreateMemoryModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="create-source-title" className="block text-xs font-mono text-archive-secondary mb-1">
-                    Source Document / Title *
+                    Dokumen / Judul Sumber *
                   </label>
                   <input
                     id="create-source-title"
                     type="text"
-                    placeholder="RFC-004: SSR Authentication"
+                    placeholder="RFC-004: Autentikasi SSR"
                     value={sourceTitle}
                     onChange={(e) => setSourceTitle(e.target.value)}
                     className="w-full bg-archive-card border border-archive-border rounded px-2.5 py-1.5 text-xs text-archive-primary focus:border-archive-accent outline-none"
@@ -277,7 +277,7 @@ export function CreateMemoryModal({
                 </div>
                 <div>
                   <label htmlFor="create-source-type" className="block text-xs font-mono text-archive-secondary mb-1">
-                    Source Type
+                    Tipe Sumber
                   </label>
                   <select
                     id="create-source-type"
@@ -286,9 +286,9 @@ export function CreateMemoryModal({
                     className="w-full bg-archive-card border border-archive-border rounded px-2.5 py-1.5 text-xs text-archive-primary focus:border-archive-accent outline-none"
                   >
                     <option value="rfc">RFC</option>
-                    <option value="document">Technical Document</option>
-                    <option value="codebase">Codebase / PR</option>
-                    <option value="discussion">Design Discussion</option>
+                    <option value="document">Dokumen Teknis</option>
+                    <option value="codebase">Kode Sumber / PR</option>
+                    <option value="discussion">Diskusi Desain</option>
                   </select>
                 </div>
               </div>
@@ -296,7 +296,7 @@ export function CreateMemoryModal({
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
                   <label htmlFor="create-source-uri" className="block text-xs font-mono text-archive-secondary mb-1">
-                    URI / Document Link
+                    Tautan Dokumen / URI
                   </label>
                   <input
                     id="create-source-uri"
@@ -309,12 +309,12 @@ export function CreateMemoryModal({
                 </div>
                 <div>
                   <label htmlFor="create-source-loc" className="block text-xs font-mono text-archive-secondary mb-1">
-                    Location / Section Reference
+                    Referensi Bagian / Halaman
                   </label>
                   <input
                     id="create-source-loc"
                     type="text"
-                    placeholder="Section 4.1 or Line 120"
+                    placeholder="Bagian 4.1 atau Baris 120"
                     value={locationReference}
                     onChange={(e) => setLocationReference(e.target.value)}
                     className="w-full bg-archive-card border border-archive-border rounded px-2.5 py-1.5 text-xs text-archive-primary focus:border-archive-accent outline-none"
@@ -324,12 +324,12 @@ export function CreateMemoryModal({
 
               <div>
                 <label htmlFor="create-citation-snippet" className="block text-xs font-mono text-archive-secondary mb-1">
-                  Citation Snippet
+                  Kutipan Sitasi
                 </label>
                 <textarea
                   id="create-citation-snippet"
                   rows={2}
-                  placeholder="Quoted excerpt directly grounding this context..."
+                  placeholder="Kutipan langsung yang mendasari konteks ini..."
                   value={citationSnippet}
                   onChange={(e) => setCitationSnippet(e.target.value)}
                   className="w-full bg-archive-card border border-archive-border rounded px-2.5 py-1.5 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
@@ -345,7 +345,7 @@ export function CreateMemoryModal({
               onClick={onClose}
               className="px-4 py-2 text-xs font-medium text-archive-secondary hover:text-archive-primary rounded border border-archive-border hover:bg-archive-subtle transition-colors cursor-pointer"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
@@ -353,7 +353,7 @@ export function CreateMemoryModal({
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-archive-bg bg-archive-accent hover:bg-archive-accentHover rounded font-semibold transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{isLoading ? "Preserving..." : "Preserve Memory"}</span>
+              <span>{isLoading ? "Menyimpan..." : "Simpan Memori"}</span>
             </button>
           </div>
         </form>

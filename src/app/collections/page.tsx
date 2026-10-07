@@ -3,9 +3,9 @@ import { CollectionsWorkspace } from "@/components/CollectionsWorkspace";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Thematic Collections & AI Prompt Export — MemoryVault",
+  title: "Koleksi Tematik & Ekspor Prompt AI — MemoryVault",
   description:
-    "Curate technical memories and ADR decisions into exportable context bundles for AI session injection.",
+    "Kurasi memori teknis dan keputusan ADR ke dalam bundel konteks siap ekspor untuk injeksi sesi AI.",
 };
 
 export const dynamic = "force-dynamic";

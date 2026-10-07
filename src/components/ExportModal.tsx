@@ -47,7 +47,7 @@ export function ExportModal({
         if (json.data) {
           setBundle(json.data);
         } else {
-          setErrorMessage(json.error || "Failed to generate context export.");
+          setErrorMessage(json.error || "Gagal menyusun ekspor konteks.");
         }
       })
       .catch((err) => {
@@ -78,7 +78,7 @@ export function ExportModal({
   function handleDownload() {
     if (!bundle?.formattedOutput) return;
     const ext = format === "json" ? "json" : "md";
-    const filename = `context-export-${collectionTitle ? collectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "bundle"}.${ext}`;
+    const filename = `konteks-ekspor-${collectionTitle ? collectionTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-") : "bundle"}.${ext}`;
     const blob = new Blob([bundle.formattedOutput], {
       type: format === "json" ? "application/json" : "text/markdown",
     });
@@ -106,10 +106,10 @@ export function ExportModal({
             </div>
             <div>
               <h2 id="modal-export-title" className="text-base font-semibold text-archive-primary font-mono">
-                AI Context Injection Bundle
+                Paket Injeksi Konteks AI
               </h2>
               <p className="text-xs text-archive-muted">
-                Authoritative technical context ready to inject into System Prompts or Context Windows.
+                Konteks teknis otoritatif yang siap diinjeksi ke System Prompt atau Context Window.
               </p>
             </div>
           </div>
@@ -117,7 +117,7 @@ export function ExportModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close export modal"
+            aria-label="Tutup modal ekspor"
             className="text-archive-secondary hover:text-archive-primary p-1.5 rounded hover:bg-archive-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -128,7 +128,7 @@ export function ExportModal({
         <div className="px-6 py-3 border-b border-archive-border bg-archive-card flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
           {/* Format Buttons */}
           <div className="flex items-center gap-2">
-            <span className="text-archive-muted mr-1">Target Prompt Format:</span>
+            <span className="text-archive-muted mr-1">Format Prompt Target:</span>
             <button
               type="button"
               onClick={() => setFormat("markdown")}
@@ -138,7 +138,7 @@ export function ExportModal({
                   : "bg-archive-subtle text-archive-secondary hover:text-archive-primary border border-archive-border"
               }`}
             >
-              Markdown (Standard)
+              Markdown (Standar)
             </button>
             <button
               type="button"
@@ -160,7 +160,7 @@ export function ExportModal({
                   : "bg-archive-subtle text-archive-secondary hover:text-archive-primary border border-archive-border"
               }`}
             >
-              JSON (Tool / API)
+              JSON (Alat / API)
             </button>
           </div>
 
@@ -168,10 +168,10 @@ export function ExportModal({
           {bundle && (
             <div className="flex items-center gap-3">
               <span className="px-2.5 py-0.5 rounded bg-archive-subtle border border-archive-border text-archive-emerald font-semibold">
-                ~{bundle.tokenEstimate.toLocaleString()} Tokens
+                ~{bundle.tokenEstimate.toLocaleString()} Token
               </span>
               <span className="text-archive-muted">
-                {bundle.memories.length} Memories • {bundle.decisions.length} ADRs
+                {bundle.memories.length} Memori • {bundle.decisions.length} ADR
               </span>
             </div>
           )}
@@ -182,7 +182,7 @@ export function ExportModal({
           {isLoading ? (
             <div className="flex flex-col items-center justify-center p-16 text-archive-muted">
               <Loader2 className="w-8 h-8 animate-spin text-archive-accent mb-2" />
-              <span className="text-xs font-mono">Generating verified context bundle...</span>
+              <span className="text-xs font-mono">Menyusun paket konteks terverifikasi...</span>
             </div>
           ) : errorMessage ? (
             <div className="p-4 rounded border border-archive-rose/30 bg-archive-rose/10 text-xs text-archive-rose font-mono">
@@ -198,7 +198,7 @@ export function ExportModal({
         {/* Footer Actions */}
         <div className="px-6 py-4 border-t border-archive-border bg-archive-subtle/30 flex items-center justify-between">
           <span className="text-xs font-mono text-archive-muted">
-            Zero Hallucinations Guarantee: Only verified repository decisions and memories are included.
+            Jaminan Bebas Halusinasi: Hanya menyertakan keputusan dan memori repositori yang terverifikasi.
           </span>
 
           <div className="flex items-center gap-3">
@@ -209,7 +209,7 @@ export function ExportModal({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded border border-archive-border bg-archive-subtle hover:bg-archive-border text-archive-secondary hover:text-archive-primary text-xs font-mono transition-colors disabled:opacity-50 cursor-pointer"
             >
               <Download className="w-3.5 h-3.5" />
-              <span>Download File</span>
+              <span>Unduh Berkas</span>
             </button>
 
             <button
@@ -221,12 +221,12 @@ export function ExportModal({
               {isCopied ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-archive-bg" />
-                  <span>Copied to Clipboard!</span>
+                  <span>Berhasil Disalin ke Clipboard!</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5" />
-                  <span>Copy Prompt to Clipboard</span>
+                  <span>Salin Prompt ke Clipboard</span>
                 </>
               )}
             </button>

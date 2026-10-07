@@ -6,14 +6,14 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
 
     // Verify Title & Hero
     await expect(page).toHaveTitle(/MemoryVault/);
-    await expect(page.locator("h1")).toContainText("Deterministic cross-project memory");
+    await expect(page.locator("h1")).toContainText("Sistem memori dan konteks teknis");
 
     // Verify Main Navigation Links
     const nav = page.locator("nav[aria-label='Main Navigation']");
-    await expect(nav.getByRole("link", { name: "Memories" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Decisions (ADRs)" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Collections & AI Export" })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Projects & Governance" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Memori" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Keputusan (ADR)" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Koleksi & Ekspor AI" })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Proyek & Tata Kelola" })).toBeVisible();
 
     // Verify Domain Model Section
     await expect(page.locator("#domain")).toBeVisible();
@@ -29,10 +29,10 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     await expect(page.getByText("v1", { exact: true }).first()).toBeVisible();
 
     // Open New Memory Modal
-    await page.getByRole("button", { name: "New Memory" }).click();
+    await page.getByRole("button", { name: "Tambah Memori" }).click();
     const modal = page.locator("div[role='dialog']");
     await expect(modal).toBeVisible();
-    await expect(modal.getByText("Preserve Technical Memory")).toBeVisible();
+    await expect(modal.getByText("Simpan Memori Teknis")).toBeVisible();
 
     // Fill form using exact element IDs
     await page.locator("#create-title").fill("Playwright E2E Memory Verification");
@@ -41,7 +41,7 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     await page.locator("#create-author").fill("qa-automation-bot");
 
     // Submit form
-    await modal.getByRole("button", { name: "Preserve Memory" }).click();
+    await modal.getByRole("button", { name: "Simpan Memori" }).click();
 
     // Wait for modal to close and new memory to appear
     await expect(modal).not.toBeVisible();
@@ -56,10 +56,10 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     await expect(page.getByText("accepted", { exact: false }).first()).toBeVisible();
 
     // Open New ADR Modal
-    await page.getByRole("button", { name: "Record ADR" }).click();
+    await page.getByRole("button", { name: "Catat ADR" }).click();
     const modal = page.locator("div[role='dialog']");
     await expect(modal).toBeVisible();
-    await expect(modal.getByText("Record Architectural Decision (ADR)")).toBeVisible();
+    await expect(modal.getByText("Catat Keputusan Arsitektur (ADR)")).toBeVisible();
 
     // Fill and submit
     await page.locator("#decision-title").fill("ADR-002: Dual-Mode Persistence Strategy");
@@ -67,7 +67,7 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     await page.locator("#decision-text").fill("Maintain zero-config in-memory adapter as primary dev fallback.");
     await page.locator("#decision-consequences").fill("Faster developer feedback loop with identical domain port.");
 
-    await modal.getByRole("button", { name: "Record Decision" }).click();
+    await modal.getByRole("button", { name: "Simpan Keputusan" }).click();
     await expect(modal).not.toBeVisible();
     await expect(page.getByText("ADR-002: Dual-Mode Persistence Strategy").first()).toBeVisible();
   });
@@ -79,26 +79,26 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     await expect(page.getByText("Agentic Determinism & Boundary Invariants").first()).toBeVisible();
 
     // Open Export Context Modal
-    await page.getByRole("button", { name: "Export for AI Prompt" }).click();
+    await page.getByRole("button", { name: "Ekspor Prompt AI" }).click();
     const modal = page.locator("div[role='dialog']");
     await expect(modal).toBeVisible();
-    await expect(modal.getByText("AI Context Injection Bundle")).toBeVisible();
+    await expect(modal.getByText("Paket Injeksi Konteks AI")).toBeVisible();
 
     // Verify export formats and preview content
-    await expect(modal.getByText("Markdown (Standard)")).toBeVisible();
+    await expect(modal.getByText("Markdown (Standar)")).toBeVisible();
     await expect(modal.getByText("XML (Claude / Gemini)")).toBeVisible();
-    await expect(modal.getByText("JSON (Tool / API)")).toBeVisible();
+    await expect(modal.getByText("JSON (Alat / API)")).toBeVisible();
 
     // Switch to XML tab
     await modal.getByRole("button", { name: "XML (Claude / Gemini)" }).click();
     await expect(modal.locator("pre")).toContainText("<project_context");
 
     // Switch to JSON tab
-    await modal.getByRole("button", { name: "JSON (Tool / API)" }).click();
+    await modal.getByRole("button", { name: "JSON (Alat / API)" }).click();
     await expect(modal.locator("pre")).toContainText('"collectionId"');
 
     // Close modal
-    await modal.getByRole("button", { name: "Close export modal" }).click();
+    await modal.getByRole("button", { name: "Tutup modal ekspor" }).click();
     await expect(modal).not.toBeVisible();
   });
 
@@ -110,13 +110,13 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     await expect(page.getByText("Data Platform")).toBeVisible();
 
     // Click Policy button on the first project card
-    const firstPolicyBtn = page.getByRole("button", { name: "Policy" }).first();
+    const firstPolicyBtn = page.getByRole("button", { name: "Kebijakan" }).first();
     await firstPolicyBtn.click();
 
     // Access Policy Modal
     const modal = page.locator("div[role='dialog']");
     await expect(modal).toBeVisible();
-    await expect(modal.getByText("Access Policy Governance")).toBeVisible();
+    await expect(modal.getByText("Tata Kelola Kebijakan Akses")).toBeVisible();
 
     // Select Shared Read
     await modal.locator("input[value='shared_read']").check();
@@ -128,7 +128,7 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     }
 
     // Submit policy
-    await modal.getByRole("button", { name: "Save Policy" }).click();
+    await modal.getByRole("button", { name: "Simpan Kebijakan" }).click();
     await expect(modal).not.toBeVisible();
 
     // Verify updated badge reflects Shared Read
@@ -139,7 +139,7 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
     await page.goto("/memories");
 
     // Open Search modal via button
-    await page.getByRole("button", { name: "Hybrid Search" }).click();
+    await page.getByRole("button", { name: "Pencarian Hybrid" }).click();
     const modal = page.locator("div[role='dialog']");
     await expect(modal).toBeVisible();
 
@@ -149,10 +149,10 @@ test.describe("MemoryVault System E2E & Visual QA", () => {
 
     // Verify search results appear
     await expect(modal.getByText("Deterministic State Transition Rule")).toBeVisible();
-    await expect(modal.getByText("Relevance", { exact: false }).first()).toBeVisible();
+    await expect(modal.getByText("Relevansi", { exact: false }).first()).toBeVisible();
 
     // Close modal via close button
-    await modal.getByRole("button", { name: "Close search" }).click();
+    await modal.getByRole("button", { name: "Tutup pencarian" }).click();
     await expect(modal).not.toBeVisible();
   });
 

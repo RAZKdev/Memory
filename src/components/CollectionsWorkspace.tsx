@@ -98,7 +98,7 @@ export function CollectionsWorkspace({
                 MemoryVault
               </span>
               <span className="ml-2 text-xs font-mono text-archive-muted">
-                / Thematic Context Collections
+                / Koleksi Konteks Tematik
               </span>
             </div>
           </div>
@@ -108,19 +108,19 @@ export function CollectionsWorkspace({
               href="/memories"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Memories
+              Memori
             </Link>
             <Link
               href="/decisions"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Decisions (ADRs)
+              Keputusan (ADR)
             </Link>
             <Link
               href="/projects"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Projects
+              Proyek
             </Link>
             <button
               type="button"
@@ -128,7 +128,7 @@ export function CollectionsWorkspace({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-archive-subtle hover:bg-archive-border border border-archive-border text-archive-secondary hover:text-archive-primary rounded text-xs font-mono transition-colors cursor-pointer"
             >
               <Search className="w-3.5 h-3.5 text-archive-muted" />
-              <span>Hybrid Search</span>
+              <span>Pencarian Hybrid</span>
             </button>
             <button
               type="button"
@@ -136,7 +136,7 @@ export function CollectionsWorkspace({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-archive-accent hover:bg-archive-accentHover text-archive-bg rounded text-xs font-semibold font-mono transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>New Collection</span>
+              <span>Koleksi Baru</span>
             </button>
           </div>
         </div>
@@ -153,7 +153,7 @@ export function CollectionsWorkspace({
           <div className="space-y-1.5">
             <label htmlFor="col-scope-filter" className="text-xs font-mono text-archive-muted flex items-center gap-1.5">
               <Filter className="w-3 h-3 text-archive-accent" />
-              <span>Project Scope Filter</span>
+              <span>Filter Scope Proyek</span>
             </label>
             <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
               <button
@@ -165,7 +165,7 @@ export function CollectionsWorkspace({
                     : "bg-archive-subtle text-archive-secondary hover:text-archive-primary border border-archive-border"
                 }`}
               >
-                All Scopes
+                Semua Scope
               </button>
               {projects.map((p) => (
                 <button
@@ -189,9 +189,9 @@ export function CollectionsWorkspace({
             {collections.length === 0 ? (
               <div className="p-8 text-center rounded border border-archive-border bg-archive-card/40">
                 <Layers className="w-8 h-8 text-archive-muted mx-auto mb-2 opacity-50" />
-                <p className="text-xs font-mono text-archive-secondary">No collections created</p>
+                <p className="text-xs font-mono text-archive-secondary">Belum ada koleksi dibuat</p>
                 <p className="text-[11px] text-archive-muted mt-1">
-                  Create a collection to bundle technical memories for AI prompt injection.
+                  Buat koleksi untuk membundel memori teknis siap injeksi prompt AI.
                 </p>
               </div>
             ) : (
@@ -216,7 +216,7 @@ export function CollectionsWorkspace({
                         {project?.slug || "general"}
                       </span>
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-archive-card border border-archive-border text-archive-accent">
-                        Bundle
+                        Bundel
                       </span>
                     </div>
 
@@ -230,7 +230,7 @@ export function CollectionsWorkspace({
                     )}
 
                     <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-archive-border/40 text-[10px] font-mono text-archive-muted">
-                      <span>{decisionCount} ADRs • {memoryCount} Memories</span>
+                      <span>{decisionCount} ADR • {memoryCount} Memori</span>
                       <span>{new Date(col.updatedAt).toLocaleDateString()}</span>
                     </div>
                   </div>
@@ -250,10 +250,10 @@ export function CollectionsWorkspace({
             <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
               <Layers className="w-12 h-12 text-archive-muted/40 mb-3" />
               <h2 className="text-sm font-semibold text-archive-secondary font-mono">
-                Select a Collection to Inspect & Export
+                Pilih Koleksi untuk Diperiksa & Diekspor
               </h2>
               <p className="text-xs text-archive-muted max-w-sm mt-1">
-                View bundled memories, ADR decisions, and export prompt-ready injection text.
+                Lihat memori dan keputusan ADR dalam bundel, lalu ekspor teks siap injeksi prompt.
               </p>
             </div>
           ) : (
@@ -262,7 +262,7 @@ export function CollectionsWorkspace({
               <div className="p-6 border-b border-archive-border bg-archive-subtle/30">
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                   <span className="text-xs font-mono text-archive-muted">
-                    Project Scope: {activeScope?.name || activeCollection.projectScopeId}
+                    Scope Proyek: {activeScope?.name || activeCollection.projectScopeId}
                   </span>
 
                   {/* Primary Export Action */}
@@ -272,7 +272,7 @@ export function CollectionsWorkspace({
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-archive-accent hover:bg-archive-accentHover text-archive-bg rounded font-semibold text-xs font-mono transition-colors shadow-sm cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>Export for AI Prompt</span>
+                    <span>Ekspor Prompt AI</span>
                   </button>
                 </div>
 
@@ -292,13 +292,13 @@ export function CollectionsWorkspace({
                 <div className="flex items-center gap-2 mb-3">
                   <GitBranch className="w-4 h-4 text-archive-accent" />
                   <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted font-semibold">
-                    Bundled ADR Decisions ({(activeCollection.decisionIds || []).length})
+                    Keputusan ADR dalam Bundel ({(activeCollection.decisionIds || []).length})
                   </h2>
                 </div>
 
                 {(activeCollection.decisionIds || []).length === 0 ? (
                   <p className="text-xs font-mono text-archive-muted italic">
-                    No decisions included in this collection.
+                    Tidak ada keputusan dalam koleksi ini.
                   </p>
                 ) : (
                   <div className="space-y-2.5">
@@ -330,7 +330,7 @@ export function CollectionsWorkspace({
                             href="/decisions"
                             className="text-archive-accent hover:underline inline-flex items-center gap-1 text-[11px] flex-shrink-0"
                           >
-                            <span>Inspect</span>
+                            <span>Periksa</span>
                             <ArrowRight className="w-3 h-3" />
                           </Link>
                         </div>
@@ -345,13 +345,13 @@ export function CollectionsWorkspace({
                 <div className="flex items-center gap-2 mb-3">
                   <Archive className="w-4 h-4 text-archive-accent" />
                   <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted font-semibold">
-                    Bundled Technical Memories ({activeCollection.memoryIds.length})
+                    Memori Teknis dalam Bundel ({activeCollection.memoryIds.length})
                   </h2>
                 </div>
 
                 {activeCollection.memoryIds.length === 0 ? (
                   <p className="text-xs font-mono text-archive-muted italic">
-                    No memories included in this collection.
+                    Tidak ada memori dalam koleksi ini.
                   </p>
                 ) : (
                   <div className="space-y-2.5">
@@ -365,11 +365,11 @@ export function CollectionsWorkspace({
                           <div>
                             <div className="flex items-center gap-2 mb-1">
                               <span className="font-semibold text-archive-primary">
-                                {mem ? mem.title : `Memory: ${mId}`}
+                                {mem ? mem.title : `Memori: ${mId}`}
                               </span>
                               {mem && (
                                 <span className="text-[10px] text-archive-muted">
-                                  v{mem.currentVersion} • {(mem.confidence * 100).toFixed(0)}% conf.
+                                  v{mem.currentVersion} • {(mem.confidence * 100).toFixed(0)}% keyakinan
                                 </span>
                               )}
                             </div>
@@ -383,7 +383,7 @@ export function CollectionsWorkspace({
                             href="/memories"
                             className="text-archive-accent hover:underline inline-flex items-center gap-1 text-[11px] flex-shrink-0"
                           >
-                            <span>Inspect</span>
+                            <span>Periksa</span>
                             <ArrowRight className="w-3 h-3" />
                           </Link>
                         </div>

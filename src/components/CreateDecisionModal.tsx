@@ -48,15 +48,15 @@ export function CreateDecisionModal({
     setErrorMessage(null);
 
     if (!title.trim()) {
-      setErrorMessage("Decision title is required.");
+      setErrorMessage("Judul keputusan wajib diisi.");
       return;
     }
     if (!context.trim()) {
-      setErrorMessage("Context explaining the problem is required.");
+      setErrorMessage("Konteks masalah wajib diisi.");
       return;
     }
     if (!decisionText.trim()) {
-      setErrorMessage("The architectural decision text is required.");
+      setErrorMessage("Teks keputusan arsitektur wajib diisi.");
       return;
     }
 
@@ -80,13 +80,13 @@ export function CreateDecisionModal({
 
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Failed to create decision record");
+        throw new Error(json.error || "Gagal membuat catatan keputusan");
       }
 
       onSuccess();
       onClose();
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "An unexpected error occurred");
+      setErrorMessage(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diharapkan");
     } finally {
       setIsLoading(false);
     }
@@ -95,6 +95,12 @@ export function CreateDecisionModal({
   function toggleMemorySelection(id: string) {
     setSelectedMemoryIds((prev) =>
       prev.includes(id) ? prev.filter((mId) => mId !== id) : [...prev, id]
+    );
+  }
+
+  function toggleSourceSelection(id: string) {
+    setSelectedSourceIds((prev) =>
+      prev.includes(id) ? prev.filter((sId) => sId !== id) : [...prev, id]
     );
   }
 
@@ -112,17 +118,17 @@ export function CreateDecisionModal({
             <GitBranch className="w-5 h-5 text-archive-accent" />
             <div>
               <h2 id="modal-decision-title" className="text-base font-semibold text-archive-primary font-mono">
-                Record Architectural Decision (ADR)
+                Catat Keputusan Arsitektur (ADR)
               </h2>
               <p className="text-xs text-archive-muted">
-                Capture the context, deterministic decision, consequences, and linked memories.
+                Dokumentasikan pilihan arsitektur beserta konteks, alasan, dan konsekuensinya.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Tutup modal keputusan"
             className="text-archive-secondary hover:text-archive-primary p-1.5 rounded hover:bg-archive-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -141,11 +147,11 @@ export function CreateDecisionModal({
           {/* Project Scope & Status */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label htmlFor="decision-scope" className="block text-xs font-mono text-archive-secondary mb-1">
-                Project Scope *
+              <label htmlFor="decision-project-scope" className="block text-xs font-mono text-archive-secondary mb-1">
+                Scope Proyek *
               </label>
               <select
-                id="decision-scope"
+                id="decision-project-scope"
                 value={projectScopeId}
                 onChange={(e) => setProjectScopeId(e.target.value)}
                 className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none"
@@ -158,9 +164,10 @@ export function CreateDecisionModal({
                 ))}
               </select>
             </div>
+
             <div>
               <label htmlFor="decision-status" className="block text-xs font-mono text-archive-secondary mb-1">
-                ADR Status
+                Status Keputusan
               </label>
               <select
                 id="decision-status"
@@ -168,10 +175,10 @@ export function CreateDecisionModal({
                 onChange={(e) => setStatus(e.target.value as any)}
                 className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none"
               >
-                <option value="accepted">Accepted</option>
-                <option value="proposed">Proposed</option>
-                <option value="rejected">Rejected</option>
-                <option value="deprecated">Deprecated</option>
+                <option value="accepted">Diterima (Accepted)</option>
+                <option value="proposed">Diusulkan (Proposed)</option>
+                <option value="rejected">Ditolak (Rejected)</option>
+                <option value="deprecated">Usang (Deprecated)</option>
               </select>
             </div>
           </div>
@@ -179,15 +186,15 @@ export function CreateDecisionModal({
           {/* Title */}
           <div>
             <label htmlFor="decision-title" className="block text-xs font-mono text-archive-secondary mb-1">
-              ADR Title *
+              Judul Keputusan *
             </label>
             <input
               id="decision-title"
               type="text"
-              placeholder="e.g. ADR-002: Use pgvector HNSW Indices for Semantic Retrieval"
+              placeholder="contoh: ADR-002: Dual-Mode Persistence Strategy"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
+              className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none"
               required
             />
           </div>
@@ -195,12 +202,12 @@ export function CreateDecisionModal({
           {/* Context */}
           <div>
             <label htmlFor="decision-context" className="block text-xs font-mono text-archive-secondary mb-1">
-              Context & Problem Statement *
+              Konteks (Mengapa keputusan ini diperlukan?) *
             </label>
             <textarea
               id="decision-context"
               rows={3}
-              placeholder="What is the problem or architectural tension being addressed?"
+              placeholder="Jelaskan latar belakang, ketegangan teknis, dan masalah yang dihadapi..."
               value={context}
               onChange={(e) => setContext(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
@@ -211,12 +218,12 @@ export function CreateDecisionModal({
           {/* Decision Text */}
           <div>
             <label htmlFor="decision-text" className="block text-xs font-mono text-archive-secondary mb-1">
-              Decision Taken *
+              Keputusan Arsitektur (Apa yang diputuskan?) *
             </label>
             <textarea
               id="decision-text"
               rows={3}
-              placeholder="What choice was adopted to resolve the problem?"
+              placeholder="Tuliskan keputusan yang disepakati secara eksplisit..."
               value={decisionText}
               onChange={(e) => setDecisionText(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
@@ -227,40 +234,73 @@ export function CreateDecisionModal({
           {/* Consequences */}
           <div>
             <label htmlFor="decision-consequences" className="block text-xs font-mono text-archive-secondary mb-1">
-              Consequences & Trade-offs
+              Konsekuensi & Trade-off
             </label>
             <textarea
               id="decision-consequences"
               rows={2}
-              placeholder="What are the downstream impacts, guarantees, and trade-offs?"
+              placeholder="Dampak positif, trade-off, dan batasan setelah keputusan diterapkan..."
               value={consequences}
               onChange={(e) => setConsequences(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
             />
           </div>
 
-          {/* Link Related Memories */}
+          {/* Memory Linking Checklist */}
           {availableMemories.length > 0 && (
             <div>
               <span className="block text-xs font-mono text-archive-secondary mb-1.5">
-                Link Grounding Memories ({selectedMemoryIds.length} selected)
+                Tautkan ke Memori Teknis (Opsional)
               </span>
-              <div className="max-h-36 overflow-y-auto p-2 bg-archive-subtle/40 border border-archive-border rounded space-y-1.5">
-                {availableMemories.map((mem) => {
-                  const isChecked = selectedMemoryIds.includes(mem.id);
+              <div className="max-h-32 overflow-y-auto p-2 rounded bg-archive-subtle/50 border border-archive-border space-y-1.5">
+                {availableMemories.map((m) => {
+                  const isChecked = selectedMemoryIds.includes(m.id);
                   return (
                     <label
-                      key={mem.id}
-                      className="flex items-center gap-2 p-1.5 rounded hover:bg-archive-subtle cursor-pointer text-xs font-mono text-archive-primary"
+                      key={m.id}
+                      className="flex items-center gap-2 text-xs text-archive-primary cursor-pointer hover:bg-archive-card p-1 rounded transition-colors"
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
-                        onChange={() => toggleMemorySelection(mem.id)}
-                        className="accent-archive-accent cursor-pointer"
+                        onChange={() => toggleMemorySelection(m.id)}
+                        className="rounded border-archive-border text-archive-accent focus:ring-0 cursor-pointer"
                       />
-                      <span className="truncate">{mem.title}</span>
-                      <span className="text-[10px] text-archive-muted ml-auto">v{mem.currentVersion}</span>
+                      <span className="truncate font-mono">{m.title}</span>
+                      <span className="text-[10px] text-archive-muted font-mono ml-auto">
+                        v{m.currentVersion}
+                      </span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Source References Checklist */}
+          {availableSources.length > 0 && (
+            <div>
+              <span className="block text-xs font-mono text-archive-secondary mb-1.5">
+                Tautkan ke Sumber Sitasi (Opsional)
+              </span>
+              <div className="max-h-28 overflow-y-auto p-2 rounded bg-archive-subtle/50 border border-archive-border space-y-1.5">
+                {availableSources.map((s) => {
+                  const isChecked = selectedSourceIds.includes(s.id);
+                  return (
+                    <label
+                      key={s.id}
+                      className="flex items-center gap-2 text-xs text-archive-primary cursor-pointer hover:bg-archive-card p-1 rounded transition-colors"
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={() => toggleSourceSelection(s.id)}
+                        className="rounded border-archive-border text-archive-accent focus:ring-0 cursor-pointer"
+                      />
+                      <span className="truncate font-mono">{s.title}</span>
+                      <span className="text-[10px] text-archive-muted font-mono uppercase ml-auto">
+                        {s.type}
+                      </span>
                     </label>
                   );
                 })}
@@ -275,7 +315,7 @@ export function CreateDecisionModal({
               onClick={onClose}
               className="px-4 py-2 text-xs font-medium text-archive-secondary hover:text-archive-primary rounded border border-archive-border hover:bg-archive-subtle transition-colors cursor-pointer"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
@@ -283,7 +323,7 @@ export function CreateDecisionModal({
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-archive-bg bg-archive-accent hover:bg-archive-accentHover rounded font-semibold transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{isLoading ? "Saving ADR..." : "Record Decision"}</span>
+              <span>{isLoading ? "Menyimpan..." : "Simpan Keputusan"}</span>
             </button>
           </div>
         </form>

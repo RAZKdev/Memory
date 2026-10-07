@@ -125,15 +125,18 @@ export function MemoryWorkspace({
       <header className="border-b border-archive-border bg-archive-card/60 backdrop-blur sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded border border-archive-accent/40 bg-archive-subtle flex items-center justify-center text-archive-accent">
+            <Link
+              href="/"
+              className="w-8 h-8 rounded border border-archive-accent/40 bg-archive-subtle flex items-center justify-center text-archive-accent hover:border-archive-accent transition-colors"
+            >
               <Archive className="w-4 h-4" />
-            </div>
+            </Link>
             <div>
               <span className="font-semibold text-archive-primary tracking-wide text-sm font-mono">
                 MemoryVault
               </span>
               <span className="ml-2 text-xs font-mono text-archive-muted">
-                / Technical Context Archive
+                / Arsip Konteks Teknis
               </span>
             </div>
           </div>
@@ -143,19 +146,19 @@ export function MemoryWorkspace({
               href="/decisions"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              ADRs & Decisions
+              Keputusan & ADR
             </Link>
             <Link
               href="/collections"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Collections
+              Koleksi
             </Link>
             <Link
               href="/projects"
               className="text-xs font-mono text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Projects
+              Proyek
             </Link>
             <button
               type="button"
@@ -163,7 +166,7 @@ export function MemoryWorkspace({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-archive-subtle hover:bg-archive-border border border-archive-border text-archive-secondary hover:text-archive-primary rounded text-xs font-mono transition-colors cursor-pointer"
             >
               <Search className="w-3.5 h-3.5 text-archive-muted" />
-              <span>Hybrid Search</span>
+              <span>Pencarian Hybrid</span>
             </button>
             <button
               type="button"
@@ -171,7 +174,7 @@ export function MemoryWorkspace({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-archive-accent hover:bg-archive-accentHover text-archive-bg rounded text-xs font-semibold font-mono transition-colors cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>New Memory</span>
+              <span>Tambah Memori</span>
             </button>
           </div>
         </div>
@@ -188,7 +191,7 @@ export function MemoryWorkspace({
           <div className="space-y-1.5">
             <label htmlFor="scope-selector" className="text-xs font-mono text-archive-muted flex items-center gap-1.5">
               <Filter className="w-3 h-3 text-archive-accent" />
-              <span>Project Scope Boundary</span>
+              <span>Batasan Scope Proyek</span>
             </label>
             <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
               <button
@@ -200,7 +203,7 @@ export function MemoryWorkspace({
                     : "bg-archive-subtle text-archive-secondary hover:text-archive-primary border border-archive-border"
                 }`}
               >
-                All Scopes
+                Semua Scope
               </button>
               {projects.map((p) => (
                 <button
@@ -224,7 +227,7 @@ export function MemoryWorkspace({
             <Search className="w-3.5 h-3.5 text-archive-muted absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               type="text"
-              placeholder="Search context, tags, decisions..."
+              placeholder="Cari konteks, tag, keputusan..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-9 pr-3 py-1.5 bg-archive-subtle border border-archive-border rounded text-xs text-archive-primary placeholder-archive-muted focus:border-archive-accent outline-none"
@@ -233,8 +236,8 @@ export function MemoryWorkspace({
 
           {/* Memory List Count */}
           <div className="flex items-center justify-between text-xs font-mono text-archive-muted px-1">
-            <span>{memories.length} item{memories.length === 1 ? "" : "s"} preserved</span>
-            <span className="text-archive-emerald">Audit Verified</span>
+            <span>{memories.length} item tersimpan</span>
+            <span className="text-archive-emerald">Terverifikasi Audit</span>
           </div>
 
           {/* Memory Cards */}
@@ -242,9 +245,9 @@ export function MemoryWorkspace({
             {memories.length === 0 ? (
               <div className="p-8 text-center rounded border border-archive-border bg-archive-card/40">
                 <Archive className="w-8 h-8 text-archive-muted mx-auto mb-2 opacity-50" />
-                <p className="text-xs font-mono text-archive-secondary">No memories found</p>
+                <p className="text-xs font-mono text-archive-secondary">Tidak ada memori ditemukan</p>
                 <p className="text-[11px] text-archive-muted mt-1">
-                  Adjust filters or preserve a new technical decision.
+                  Sesuaikan filter atau simpan keputusan teknis baru.
                 </p>
               </div>
             ) : (
@@ -278,7 +281,7 @@ export function MemoryWorkspace({
                     </p>
 
                     <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-archive-border/40 text-[10px] font-mono text-archive-muted">
-                      <span>{(m.confidence * 100).toFixed(0)}% conf.</span>
+                      <span>{(m.confidence * 100).toFixed(0)}% keyakinan</span>
                       <div className="flex gap-1 overflow-hidden">
                         {m.tags.slice(0, 2).map((t) => (
                           <span key={t} className="px-1 py-0.5 rounded bg-archive-subtle border border-archive-border">
@@ -303,17 +306,17 @@ export function MemoryWorkspace({
           {isLoadingDetails ? (
             <div className="flex-1 flex items-center justify-center p-12">
               <span className="text-xs font-mono text-archive-muted animate-pulse">
-                Loading memory context...
+                Memuat konteks memori...
               </span>
             </div>
           ) : !activeMemory ? (
             <div className="flex-1 flex flex-col items-center justify-center p-12 text-center">
               <BookOpen className="w-12 h-12 text-archive-muted/40 mb-3" />
               <h2 className="text-sm font-semibold text-archive-secondary font-mono">
-                Select a Memory to Inspect
+                Pilih Memori untuk Diperiksa
               </h2>
               <p className="text-xs text-archive-muted max-w-sm mt-1">
-                View immutable version history, provenance citations, and linked project scope boundaries.
+                Lihat riwayat versi kekal, sitasi rujukan, dan batasan scope proyek terkait.
               </p>
             </div>
           ) : (
@@ -323,10 +326,10 @@ export function MemoryWorkspace({
                 <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono px-2 py-0.5 rounded bg-archive-accent/10 border border-archive-accent/30 text-archive-accent font-semibold">
-                      Version {activeMemory.currentVersion}
+                      Versi {activeMemory.currentVersion}
                     </span>
                     <span className="text-xs font-mono px-2 py-0.5 rounded bg-archive-emerald/10 border border-archive-emerald/30 text-archive-emerald">
-                      {(activeMemory.confidence * 100).toFixed(0)}% Confidence
+                      {(activeMemory.confidence * 100).toFixed(0)}% Tingkat Keyakinan
                     </span>
                     <span className="text-xs font-mono text-archive-muted uppercase tracking-wider">
                       Status: {activeMemory.status}
@@ -339,7 +342,7 @@ export function MemoryWorkspace({
                     className="inline-flex items-center gap-1.5 px-3 py-1 bg-archive-subtle hover:bg-archive-border border border-archive-border rounded text-xs font-mono text-archive-primary transition-colors cursor-pointer"
                   >
                     <GitBranch className="w-3.5 h-3.5 text-archive-accent" />
-                    <span>Revise Memory (v{activeMemory.currentVersion + 1})</span>
+                    <span>Revisi Memori (v{activeMemory.currentVersion + 1})</span>
                   </button>
                 </div>
 
@@ -354,7 +357,7 @@ export function MemoryWorkspace({
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Clock className="w-3.5 h-3.5" />
-                    Updated {new Date(activeMemory.updatedAt).toLocaleDateString()}
+                    Diperbarui {new Date(activeMemory.updatedAt).toLocaleDateString()}
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Layers className="w-3.5 h-3.5" />
@@ -379,7 +382,7 @@ export function MemoryWorkspace({
               {/* Memory Canonical Content */}
               <div className="p-6 border-b border-archive-border">
                 <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted mb-3">
-                  Preserved Technical Context
+                  Konteks Teknis Tersimpan
                 </h2>
                 <div className="p-4 rounded-lg bg-archive-bg border border-archive-border font-mono text-xs md:text-sm text-archive-primary leading-relaxed whitespace-pre-wrap">
                   {activeMemory.content}
@@ -391,13 +394,13 @@ export function MemoryWorkspace({
                 <div className="flex items-center gap-2 mb-3">
                   <BookOpen className="w-4 h-4 text-archive-accent" />
                   <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted">
-                    Source Provenance ({sourceRefs.length})
+                    Sumber Rujukan & Sitasi ({sourceRefs.length})
                   </h2>
                 </div>
 
                 {sourceRefs.length === 0 ? (
                   <p className="text-xs font-mono text-archive-muted italic">
-                    No external source citations attached to this memory.
+                    Tidak ada sitasi sumber eksternal yang ditautkan ke memori ini.
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -408,7 +411,7 @@ export function MemoryWorkspace({
                       >
                         <div className="flex items-center justify-between gap-2 mb-1.5">
                           <span className="font-semibold text-archive-primary font-mono">
-                            {ref.source?.title || "Referenced Source"}
+                            {ref.source?.title || "Sumber Rujukan"}
                           </span>
                           {ref.source?.uri && (
                             <a
@@ -417,7 +420,7 @@ export function MemoryWorkspace({
                               rel="noreferrer"
                               className="text-archive-accent hover:underline inline-flex items-center gap-1 font-mono text-[11px]"
                             >
-                              <span>View Source</span>
+                              <span>Buka Sumber</span>
                               <ExternalLink className="w-3 h-3" />
                             </a>
                           )}
@@ -443,7 +446,7 @@ export function MemoryWorkspace({
                 <div className="flex items-center gap-2 mb-4">
                   <History className="w-4 h-4 text-archive-accent" />
                   <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted">
-                    Immutable Version History ({versions.length})
+                    Riwayat Versi Kekal ({versions.length})
                   </h2>
                 </div>
 
@@ -457,10 +460,10 @@ export function MemoryWorkspace({
                         <div className="flex items-center justify-between gap-2 mb-1">
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold font-mono text-archive-primary">
-                              Version {ver.versionNumber}
+                              Versi {ver.versionNumber}
                             </span>
                             <span className="text-[11px] font-mono text-archive-muted">
-                              by {ver.authorId}
+                              oleh {ver.authorId}
                             </span>
                           </div>
                           <span className="text-[10px] font-mono text-archive-muted">
@@ -469,7 +472,7 @@ export function MemoryWorkspace({
                         </div>
 
                         <div className="text-xs font-mono text-archive-accent mb-2">
-                          Reason: {ver.reasonForChange}
+                          Alasan: {ver.reasonForChange}
                         </div>
 
                         <div className="text-xs text-archive-secondary bg-archive-card p-2 rounded border border-archive-border/60 line-clamp-2 font-mono">

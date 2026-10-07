@@ -83,7 +83,7 @@ export function HybridSearchModal({
           <input
             id="modal-search-title"
             type="text"
-            placeholder="Search memories across projects (e.g. 'Supabase RLS', 'deterministic state')..."
+            placeholder="Cari memori lintas proyek (contoh: 'Supabase RLS', 'state deterministik')..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
@@ -104,7 +104,7 @@ export function HybridSearchModal({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close search"
+            aria-label="Tutup pencarian"
             className="text-archive-muted hover:text-archive-primary p-1 rounded hover:bg-archive-subtle cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -115,7 +115,7 @@ export function HybridSearchModal({
         <div className="px-4 py-2.5 bg-archive-subtle/50 border-b border-archive-border flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
           {/* Mode Switcher */}
           <div className="flex items-center gap-1.5">
-            <span className="text-archive-muted mr-1">Retrieval Mode:</span>
+            <span className="text-archive-muted mr-1">Mode Pencarian:</span>
             <button
               type="button"
               onClick={() => setSearchMode("hybrid")}
@@ -125,7 +125,7 @@ export function HybridSearchModal({
                   : "bg-archive-card border border-archive-border text-archive-secondary hover:text-archive-primary"
               }`}
             >
-              Hybrid (Vector + Keyword)
+              Hybrid (Vektor + Kata Kunci)
             </button>
             <button
               type="button"
@@ -136,7 +136,7 @@ export function HybridSearchModal({
                   : "bg-archive-card border border-archive-border text-archive-secondary hover:text-archive-primary"
               }`}
             >
-              Semantic Vector
+              Vektor Semantik
             </button>
             <button
               type="button"
@@ -147,7 +147,7 @@ export function HybridSearchModal({
                   : "bg-archive-card border border-archive-border text-archive-secondary hover:text-archive-primary"
               }`}
             >
-              Keyword Exact
+              Kata Kunci Persis
             </button>
           </div>
 
@@ -159,7 +159,7 @@ export function HybridSearchModal({
               onChange={(e) => setSelectedScopeId(e.target.value)}
               className="bg-archive-card border border-archive-border rounded px-2 py-0.5 text-archive-primary outline-none cursor-pointer"
             >
-              <option value="all">All Project Scopes</option>
+              <option value="all">Semua Scope Proyek</option>
               {projectScopes.map((p) => (
                 <option key={p.id} value={p.id}>
                   {p.name}
@@ -175,15 +175,15 @@ export function HybridSearchModal({
             <div className="flex flex-col items-center justify-center p-8 text-center text-archive-muted">
               <Database className="w-10 h-10 mb-2 opacity-40 text-archive-accent" />
               <p className="text-xs font-mono">
-                Hybrid Search combines pgvector cosine similarity with lexical full-text ranking.
+                Pencarian Hybrid menggabungkan kesamaan kosinus pgvector dengan peringkat leksikal full-text.
               </p>
               <p className="text-[11px] text-archive-muted/70 mt-1">
-                Type terms above to initiate ranking.
+                Ketik istilah pencarian di atas untuk memulai perangkingan.
               </p>
             </div>
           ) : results.length === 0 && !isLoading ? (
             <div className="p-8 text-center text-archive-muted font-mono text-xs">
-              No matching memories found for &quot;{query}&quot; in mode &apos;{searchMode}&apos;.
+              Tidak ada memori yang cocok ditemukan untuk &quot;{query}&quot; pada mode &apos;{searchMode}&apos;.
             </div>
           ) : (
             results.map((item) => {
@@ -201,7 +201,7 @@ export function HybridSearchModal({
                   <div className="flex items-center justify-between gap-2 mb-1.5">
                     <div className="flex items-center gap-2">
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-archive-accent/10 border border-archive-accent/30 text-archive-accent font-semibold">
-                        {percent}% Relevance
+                        {percent}% Relevansi
                       </span>
                       <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-archive-subtle border border-archive-border text-archive-secondary uppercase">
                         {item.matchType}
@@ -227,7 +227,7 @@ export function HybridSearchModal({
                     <div className="mt-2 pt-2 border-t border-archive-border/40 flex items-center gap-2 text-[11px] font-mono text-archive-muted">
                       <BookOpen className="w-3 h-3 text-archive-accent" />
                       <span className="truncate">
-                        Citation: {item.sourceReferences[0].citationSnippet || item.sourceReferences[0].locationReference || "External Source"}
+                        Sitasi: {item.sourceReferences[0].citationSnippet || item.sourceReferences[0].locationReference || "Sumber Eksternal"}
                       </span>
                     </div>
                   )}
@@ -239,8 +239,8 @@ export function HybridSearchModal({
 
         {/* Footer */}
         <div className="p-3 border-t border-archive-border bg-archive-subtle/30 flex items-center justify-between text-[11px] font-mono text-archive-muted">
-          <span>Derived Vector Engine: 128-dim Unit Hypersphere</span>
-          <span>Press ESC to close</span>
+          <span>Mesin Vektor Turunan: Unit Hypersphere 128-dimensi</span>
+          <span>Tekan ESC untuk menutup</span>
         </div>
       </div>
     </div>

@@ -41,11 +41,11 @@ export function CreateCollectionModal({
     setErrorMessage(null);
 
     if (!title.trim()) {
-      setErrorMessage("Collection title is required.");
+      setErrorMessage("Judul koleksi wajib diisi.");
       return;
     }
     if (!projectScopeId) {
-      setErrorMessage("Project scope is required.");
+      setErrorMessage("Scope proyek wajib diisi.");
       return;
     }
 
@@ -66,13 +66,13 @@ export function CreateCollectionModal({
 
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Failed to create collection");
+        throw new Error(json.error || "Gagal membuat koleksi");
       }
 
       onSuccess();
       onClose();
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "An unexpected error occurred");
+      setErrorMessage(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diharapkan");
     } finally {
       setIsLoading(false);
     }
@@ -99,22 +99,22 @@ export function CreateCollectionModal({
     >
       <div className="bg-archive-card border border-archive-border rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-archive-border bg-archive-subtle/40">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-archive-border">
           <div className="flex items-center gap-2">
             <Layers className="w-5 h-5 text-archive-accent" />
             <div>
               <h2 id="modal-col-title" className="text-base font-semibold text-archive-primary font-mono">
-                Create Thematic Collection
+                Buat Koleksi Tematik
               </h2>
               <p className="text-xs text-archive-muted">
-                Group memories and ADR decisions into a curated context bundle for AI injection.
+                Kelompokkan memori dan ADR untuk injeksi prompt AI yang terarah.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Tutup modal koleksi"
             className="text-archive-secondary hover:text-archive-primary p-1.5 rounded hover:bg-archive-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -132,11 +132,11 @@ export function CreateCollectionModal({
 
           {/* Project Scope */}
           <div>
-            <label htmlFor="col-scope" className="block text-xs font-mono text-archive-secondary mb-1">
-              Project Scope Boundary *
+            <label htmlFor="col-project-scope" className="block text-xs font-mono text-archive-secondary mb-1">
+              Scope Proyek *
             </label>
             <select
-              id="col-scope"
+              id="col-project-scope"
               value={projectScopeId}
               onChange={(e) => setProjectScopeId(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none"
@@ -153,57 +153,61 @@ export function CreateCollectionModal({
           {/* Title */}
           <div>
             <label htmlFor="col-title" className="block text-xs font-mono text-archive-secondary mb-1">
-              Collection Title *
+              Judul Koleksi *
             </label>
             <input
               id="col-title"
               type="text"
-              placeholder="e.g. Core Security & Authentication Invariants"
+              placeholder="contoh: Fondasi Invarian & Keamanan Agentic"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
+              className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none"
               required
             />
           </div>
 
           {/* Description */}
           <div>
-            <label htmlFor="col-desc" className="block text-xs font-mono text-archive-secondary mb-1">
-              Description & Purpose
+            <label htmlFor="col-description" className="block text-xs font-mono text-archive-secondary mb-1">
+              Deskripsi & Tujuan Koleksi
             </label>
             <textarea
-              id="col-desc"
+              id="col-description"
               rows={2}
-              placeholder="Why this bundle exists and when it should be injected..."
+              placeholder="Jelaskan fokus koleksi ini (misal: aturan determinisme state, integrasi RLS)..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
             />
           </div>
 
-          {/* ADR Decisions Selection */}
+          {/* ADR Selection Checklist */}
           {availableDecisions.length > 0 && (
             <div>
-              <span className="block text-xs font-mono text-archive-secondary mb-1.5 flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 mb-1.5">
                 <GitBranch className="w-3.5 h-3.5 text-archive-accent" />
-                <span>Include ADR Decisions ({selectedDecisionIds.length} selected)</span>
-              </span>
-              <div className="max-h-36 overflow-y-auto p-2 bg-archive-subtle/40 border border-archive-border rounded space-y-1.5">
+                <span className="text-xs font-mono text-archive-secondary">
+                  Sertakan Keputusan ADR ({availableDecisions.length})
+                </span>
+              </div>
+              <div className="max-h-36 overflow-y-auto p-2 rounded bg-archive-subtle/50 border border-archive-border space-y-1.5">
                 {availableDecisions.map((dec) => {
                   const isChecked = selectedDecisionIds.includes(dec.id);
                   return (
                     <label
                       key={dec.id}
-                      className="flex items-center gap-2 p-1.5 rounded hover:bg-archive-subtle cursor-pointer text-xs font-mono text-archive-primary"
+                      className="flex items-center gap-2 text-xs text-archive-primary cursor-pointer hover:bg-archive-card p-1 rounded transition-colors"
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => toggleDecision(dec.id)}
-                        className="accent-archive-accent cursor-pointer"
+                        className="rounded border-archive-border text-archive-accent focus:ring-0 cursor-pointer"
                       />
-                      <span className="truncate">{dec.title}</span>
-                      <span className="text-[10px] text-archive-emerald uppercase ml-auto">{dec.status}</span>
+                      <span className="truncate font-mono">{dec.title}</span>
+                      <span className="text-[10px] text-archive-emerald uppercase font-mono ml-auto">
+                        {dec.status}
+                      </span>
                     </label>
                   );
                 })}
@@ -211,29 +215,33 @@ export function CreateCollectionModal({
             </div>
           )}
 
-          {/* Memories Selection */}
+          {/* Memory Selection Checklist */}
           {availableMemories.length > 0 && (
             <div>
-              <span className="block text-xs font-mono text-archive-secondary mb-1.5 flex items-center gap-1.5">
+              <div className="flex items-center gap-1.5 mb-1.5">
                 <Archive className="w-3.5 h-3.5 text-archive-accent" />
-                <span>Include Grounding Memories ({selectedMemoryIds.length} selected)</span>
-              </span>
-              <div className="max-h-36 overflow-y-auto p-2 bg-archive-subtle/40 border border-archive-border rounded space-y-1.5">
+                <span className="text-xs font-mono text-archive-secondary">
+                  Sertakan Memori Teknis ({availableMemories.length})
+                </span>
+              </div>
+              <div className="max-h-36 overflow-y-auto p-2 rounded bg-archive-subtle/50 border border-archive-border space-y-1.5">
                 {availableMemories.map((mem) => {
                   const isChecked = selectedMemoryIds.includes(mem.id);
                   return (
                     <label
                       key={mem.id}
-                      className="flex items-center gap-2 p-1.5 rounded hover:bg-archive-subtle cursor-pointer text-xs font-mono text-archive-primary"
+                      className="flex items-center gap-2 text-xs text-archive-primary cursor-pointer hover:bg-archive-card p-1 rounded transition-colors"
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => toggleMemory(mem.id)}
-                        className="accent-archive-accent cursor-pointer"
+                        className="rounded border-archive-border text-archive-accent focus:ring-0 cursor-pointer"
                       />
-                      <span className="truncate">{mem.title}</span>
-                      <span className="text-[10px] text-archive-muted ml-auto">v{mem.currentVersion}</span>
+                      <span className="truncate font-mono">{mem.title}</span>
+                      <span className="text-[10px] text-archive-muted font-mono ml-auto">
+                        v{mem.currentVersion}
+                      </span>
                     </label>
                   );
                 })}
@@ -248,7 +256,7 @@ export function CreateCollectionModal({
               onClick={onClose}
               className="px-4 py-2 text-xs font-medium text-archive-secondary hover:text-archive-primary rounded border border-archive-border hover:bg-archive-subtle transition-colors cursor-pointer"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
@@ -256,7 +264,7 @@ export function CreateCollectionModal({
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-archive-bg bg-archive-accent hover:bg-archive-accentHover rounded font-semibold transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{isLoading ? "Creating..." : "Create Collection"}</span>
+              <span>{isLoading ? "Membuat..." : "Buat Koleksi"}</span>
             </button>
           </div>
         </form>

@@ -1,7 +1,13 @@
 import React from "react";
 import { getRepository } from "@/lib/repository";
 import { ProjectsWorkspace } from "@/components/ProjectsWorkspace";
+import type { Metadata } from "next";
 import { AccessPolicy } from "@/domain/types";
+
+export const metadata: Metadata = {
+  title: "Tata Kelola Proyek & Kebijakan — MemoryVault",
+  description: "Kelola batasan isolasi privat dan kebijakan akses berbagi lintas proyek.",
+};
 
 export const dynamic = "force-dynamic";
 

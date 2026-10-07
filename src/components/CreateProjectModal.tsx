@@ -37,11 +37,11 @@ export function CreateProjectModal({
     setErrorMessage(null);
 
     if (!name.trim()) {
-      setErrorMessage("Project name is required.");
+      setErrorMessage("Nama proyek wajib diisi.");
       return;
     }
     if (!slug.trim()) {
-      setErrorMessage("Project slug is required.");
+      setErrorMessage("Slug proyek wajib diisi.");
       return;
     }
 
@@ -60,7 +60,7 @@ export function CreateProjectModal({
 
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Failed to create project scope");
+        throw new Error(json.error || "Gagal membuat scope proyek");
       }
 
       setName("");
@@ -69,7 +69,7 @@ export function CreateProjectModal({
       onSuccess();
       onClose();
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "An unexpected error occurred");
+      setErrorMessage(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diharapkan");
     } finally {
       setIsLoading(false);
     }
@@ -89,17 +89,17 @@ export function CreateProjectModal({
             <FolderPlus className="w-5 h-5 text-archive-accent" />
             <div>
               <h2 id="modal-project-title" className="text-base font-semibold text-archive-primary font-mono">
-                Create Project Scope
+                Buat Scope Proyek
               </h2>
               <p className="text-xs text-archive-muted">
-                Establishes a private domain boundary for technical memories and ADRs.
+                Menetapkan batasan domain privat untuk memori teknis dan ADR.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close modal"
+            aria-label="Tutup modal proyek"
             className="text-archive-secondary hover:text-archive-primary p-1.5 rounded hover:bg-archive-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -115,14 +115,15 @@ export function CreateProjectModal({
             </div>
           )}
 
+          {/* Project Name */}
           <div>
             <label htmlFor="project-name" className="block text-xs font-mono text-archive-secondary mb-1">
-              Project Name *
+              Nama Proyek *
             </label>
             <input
               id="project-name"
               type="text"
-              placeholder="e.g. Identity & Security Architecture"
+              placeholder="contoh: Agentic Architecture Foundation"
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
@@ -130,29 +131,34 @@ export function CreateProjectModal({
             />
           </div>
 
+          {/* Slug */}
           <div>
             <label htmlFor="project-slug" className="block text-xs font-mono text-archive-secondary mb-1">
-              Unique Slug (kebab-case) *
+              Slug (Pengenal Kanonikal) *
             </label>
             <input
               id="project-slug"
               type="text"
-              placeholder="e.g. identity-sec-arch"
+              placeholder="agentic-architecture"
               value={slug}
               onChange={(e) => setSlug(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
               required
             />
+            <span className="text-[10px] text-archive-muted font-mono mt-1 block">
+              Format URL aman, hanya huruf kecil, angka, dan tanda hubung (-).
+            </span>
           </div>
 
+          {/* Description */}
           <div>
             <label htmlFor="project-desc" className="block text-xs font-mono text-archive-secondary mb-1">
-              Description & Context
+              Deskripsi Scope
             </label>
             <textarea
               id="project-desc"
               rows={3}
-              placeholder="Describe the technical boundary and purpose of this scope..."
+              placeholder="Fokus arsitektur, batasan domain, dan catatan scope ini..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-archive-subtle border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
@@ -160,13 +166,13 @@ export function CreateProjectModal({
           </div>
 
           {/* Footer Actions */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-archive-border">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-archive-border">
             <button
               type="button"
               onClick={onClose}
               className="px-4 py-2 text-xs font-medium text-archive-secondary hover:text-archive-primary rounded border border-archive-border hover:bg-archive-subtle transition-colors cursor-pointer"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
@@ -174,7 +180,7 @@ export function CreateProjectModal({
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-archive-bg bg-archive-accent hover:bg-archive-accentHover rounded font-semibold transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{isLoading ? "Creating..." : "Create Scope"}</span>
+              <span>{isLoading ? "Membuat..." : "Buat Scope"}</span>
             </button>
           </div>
         </form>

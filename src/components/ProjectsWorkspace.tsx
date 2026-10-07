@@ -122,25 +122,25 @@ export function ProjectsWorkspace({
                 href="/memories"
                 className="px-3 py-1.5 rounded text-archive-secondary hover:text-archive-primary hover:bg-archive-subtle transition-colors"
               >
-                Memories
+                Memori
               </Link>
               <Link
                 href="/decisions"
                 className="px-3 py-1.5 rounded text-archive-secondary hover:text-archive-primary hover:bg-archive-subtle transition-colors"
               >
-                ADRs
+                ADR
               </Link>
               <Link
                 href="/collections"
                 className="px-3 py-1.5 rounded text-archive-secondary hover:text-archive-primary hover:bg-archive-subtle transition-colors"
               >
-                Collections
+                Koleksi
               </Link>
               <Link
                 href="/projects"
                 className="px-3 py-1.5 rounded bg-archive-subtle text-archive-accent font-semibold border border-archive-border"
               >
-                Projects
+                Proyek
               </Link>
             </nav>
           </div>
@@ -149,11 +149,11 @@ export function ProjectsWorkspace({
             <button
               type="button"
               onClick={() => setIsSearchOpen(true)}
-              aria-label="Open Hybrid Search"
+              aria-label="Buka Pencarian Hybrid"
               className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono text-archive-secondary bg-archive-subtle hover:text-archive-primary border border-archive-border rounded hover:border-archive-accent/40 transition-colors cursor-pointer"
             >
               <Search className="w-3.5 h-3.5 text-archive-accent" />
-              <span className="hidden sm:inline">Search Vault</span>
+              <span className="hidden sm:inline">Cari Vault</span>
               <kbd className="hidden sm:inline px-1 py-0.5 text-[10px] bg-archive-card border border-archive-border rounded text-archive-muted">
                 ⌘K
               </kbd>
@@ -165,7 +165,7 @@ export function ProjectsWorkspace({
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-archive-bg bg-archive-accent hover:bg-archive-accentHover rounded font-semibold transition-colors cursor-pointer shadow-sm"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>New Scope</span>
+              <span>Scope Baru</span>
             </button>
           </div>
         </div>
@@ -179,26 +179,26 @@ export function ProjectsWorkspace({
             <div className="flex items-center gap-2 mb-1">
               <FolderGit2 className="w-5 h-5 text-archive-accent" />
               <h1 className="text-xl font-bold font-mono tracking-tight text-archive-primary">
-                Project Scope Governance
+                Tata Kelola Scope Proyek
               </h1>
             </div>
             <p className="text-xs text-archive-muted max-w-2xl">
-              Manage domain isolation boundaries, cross-project access controls, and boundary policies to prevent accidental data leaks across agent contexts.
+              Kelola batasan isolasi domain, kontrol akses lintas proyek, dan kebijakan isolasi untuk mencegah kebocoran data antar sesi agen AI.
             </p>
           </div>
 
           {/* Quick Metrics */}
           <div className="flex items-center gap-4 text-xs font-mono">
             <div className="px-3 py-2 bg-archive-card border border-archive-border rounded">
-              <div className="text-[10px] text-archive-muted uppercase tracking-wider">Scopes</div>
+              <div className="text-[10px] text-archive-muted uppercase tracking-wider">Scope</div>
               <div className="text-base font-bold text-archive-primary">{projects.length}</div>
             </div>
             <div className="px-3 py-2 bg-archive-card border border-archive-border rounded">
-              <div className="text-[10px] text-archive-muted uppercase tracking-wider">Memories</div>
+              <div className="text-[10px] text-archive-muted uppercase tracking-wider">Memori</div>
               <div className="text-base font-bold text-archive-primary">{memories.length}</div>
             </div>
             <div className="px-3 py-2 bg-archive-card border border-archive-border rounded">
-              <div className="text-[10px] text-archive-muted uppercase tracking-wider">ADRs</div>
+              <div className="text-[10px] text-archive-muted uppercase tracking-wider">ADR</div>
               <div className="text-base font-bold text-archive-accent">{decisions.length}</div>
             </div>
           </div>
@@ -210,7 +210,7 @@ export function ProjectsWorkspace({
             <Search className="w-4 h-4 text-archive-muted absolute left-3 top-2.5" />
             <input
               type="text"
-              placeholder="Filter project scopes by name or slug..."
+              placeholder="Filter scope proyek berdasarkan nama atau slug..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
               className="w-full bg-archive-card border border-archive-border rounded pl-9 pr-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
@@ -250,7 +250,7 @@ export function ProjectsWorkspace({
                     {policyLevel === "private" && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-archive-amber/10 text-archive-amber border border-archive-amber/20 flex-shrink-0">
                         <Lock className="w-3 h-3" />
-                        <span>Private</span>
+                        <span>Privat (Private)</span>
                       </span>
                     )}
                     {policyLevel === "project_internal" && (
@@ -262,39 +262,39 @@ export function ProjectsWorkspace({
                     {policyLevel === "shared_read" && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono bg-archive-emerald/10 text-archive-emerald border border-archive-emerald/20 flex-shrink-0">
                         <Globe2 className="w-3 h-3" />
-                        <span>Shared ({allowedCount})</span>
+                        <span>Berbagi / Shared ({allowedCount})</span>
                       </span>
                     )}
                   </div>
 
                   {/* Description */}
                   <p className="text-xs text-archive-secondary line-clamp-2 mb-3">
-                    {project.description || "No description provided for this scope."}
+                    {project.description || "Belum ada deskripsi untuk scope ini."}
                   </p>
 
                   {/* Isolation Policy Description Notes */}
                   {policy?.description && (
                     <div className="p-2 rounded bg-archive-subtle/60 border border-archive-border/60 text-[11px] text-archive-muted font-mono mb-3">
-                      Note: {policy.description}
+                      Catatan: {policy.description}
                     </div>
                   )}
 
                   {/* Artifact Stats Counter */}
                   <div className="grid grid-cols-3 gap-2 py-2 border-y border-archive-border text-center">
                     <div>
-                      <div className="text-[10px] font-mono text-archive-muted uppercase">Memories</div>
+                      <div className="text-[10px] font-mono text-archive-muted uppercase">Memori</div>
                       <div className="text-xs font-bold font-mono text-archive-primary">
                         {projectMemories.length}
                       </div>
                     </div>
                     <div>
-                      <div className="text-[10px] font-mono text-archive-muted uppercase">ADRs</div>
+                      <div className="text-[10px] font-mono text-archive-muted uppercase">ADR</div>
                       <div className="text-xs font-bold font-mono text-archive-accent">
                         {projectDecisions.length}
                       </div>
                     </div>
                     <div>
-                      <div className="text-[10px] font-mono text-archive-muted uppercase">Collections</div>
+                      <div className="text-[10px] font-mono text-archive-muted uppercase">Koleksi</div>
                       <div className="text-xs font-bold font-mono text-archive-emerald">
                         {projectCollections.length}
                       </div>
@@ -310,7 +310,7 @@ export function ProjectsWorkspace({
                     className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded text-xs font-mono font-medium text-archive-secondary hover:text-archive-primary bg-archive-subtle hover:bg-archive-border border border-archive-border transition-colors cursor-pointer"
                   >
                     <Settings className="w-3.5 h-3.5 text-archive-accent" />
-                    <span>Policy</span>
+                    <span>Kebijakan</span>
                   </button>
 
                   <div className="flex items-center gap-2">
@@ -318,7 +318,7 @@ export function ProjectsWorkspace({
                       href={`/memories`}
                       className="inline-flex items-center gap-1 text-[11px] font-mono text-archive-secondary hover:text-archive-accent transition-colors"
                     >
-                      <span>Explore</span>
+                      <span>Jelajahi</span>
                       <ArrowRight className="w-3 h-3" />
                     </Link>
                   </div>
@@ -332,12 +332,12 @@ export function ProjectsWorkspace({
           <div className="text-center py-16 border border-dashed border-archive-border rounded-lg bg-archive-card/50">
             <FolderGit2 className="w-8 h-8 text-archive-muted mx-auto mb-2 opacity-50" />
             <h3 className="text-sm font-semibold font-mono text-archive-primary">
-              No project scopes found
+              Tidak ada scope proyek ditemukan
             </h3>
             <p className="text-xs text-archive-muted mt-1 max-w-sm mx-auto">
               {searchFilter
-                ? "No scopes match your search criteria. Try a different query."
-                : "Create your first project scope to begin isolating memories and architecture decisions."}
+                ? "Tidak ada scope yang cocok dengan kriteria pencarian Anda. Coba istilah lain."
+                : "Buat scope proyek pertama Anda untuk mulai mengisolasi memori dan keputusan arsitektur."}
             </p>
           </div>
         )}

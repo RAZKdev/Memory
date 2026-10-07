@@ -3,8 +3,8 @@ import { DecisionsWorkspace } from "@/components/DecisionsWorkspace";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Architectural Decisions (ADRs) — MemoryVault",
-  description: "Preserve and inspect architectural decision records linked deterministically to technical memories.",
+  title: "Keputusan (ADR) — Arsip Konteks Teknis MemoryVault",
+  description: "Kelola dan telusuri Architectural Decision Records (ADR) yang terhubung ke memori teknis.",
 };
 
 export const dynamic = "force-dynamic";

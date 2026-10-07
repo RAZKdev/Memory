@@ -14,32 +14,32 @@ export default function HomePage() {
   const coreEntities = [
     {
       name: "ProjectScope",
-      desc: "Defines private boundaries and explicit cross-project sharing policies.",
+      desc: "Mendefinisikan batasan privat dan kebijakan berbagi lintas proyek secara eksplisit.",
       icon: Layers,
     },
     {
       name: "Memory & MemoryVersion",
-      desc: "Canonical units of technical context with immutable audit version history.",
+      desc: "Unit kanonikal konteks teknis dengan riwayat snapshot versi audit yang kekal.",
       icon: Archive,
     },
     {
       name: "Source & Provenance",
-      desc: "First-class citation references to PRs, RFCs, and documents.",
+      desc: "Sitasi rujukan tingkat pertama untuk PR, RFC, dan dokumen spesifikasi.",
       icon: BookOpen,
     },
     {
       name: "Derived Embeddings",
-      desc: "Vector representations strictly treated as non-canonical derived data.",
+      desc: "Representasi vektor yang diperlakukan murni sebagai data turunan non-kanonikal.",
       icon: Database,
     },
     {
       name: "Decisions & ADRs",
-      desc: "Architectural decision records linked deterministically to memories.",
+      desc: "Catatan keputusan arsitektural yang tertaut secara deterministik ke memori.",
       icon: GitBranch,
     },
     {
       name: "Access Policies",
-      desc: "Default private access model with explicit boundary enforcement.",
+      desc: "Model akses privat default dengan penegakan batasan isolasi eksplisit.",
       icon: ShieldCheck,
     },
   ];
@@ -54,7 +54,7 @@ export default function HomePage() {
               <Archive className="w-4 h-4" />
             </div>
             <div>
-              <span className="font-semibold text-archive-primary tracking-wide text-sm">
+              <span className="font-semibold text-archive-primary tracking-wide text-sm font-mono">
                 MemoryVault
               </span>
               <span className="ml-2 text-xs font-mono text-archive-muted px-1.5 py-0.5 rounded bg-archive-subtle border border-archive-border">
@@ -68,37 +68,37 @@ export default function HomePage() {
               href="/memories"
               className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-2.5 py-1.5 rounded transition-colors"
             >
-              Memories
+              Memori
             </Link>
             <Link
               href="/decisions"
               className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-2.5 py-1.5 rounded transition-colors"
             >
-              Decisions (ADRs)
+              Keputusan (ADR)
             </Link>
             <Link
               href="/collections"
               className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-2.5 py-1.5 rounded transition-colors"
             >
-              Collections & AI Export
+              Koleksi & Ekspor AI
             </Link>
             <Link
               href="/projects"
               className="text-xs font-semibold text-archive-accent hover:text-archive-accentHover px-2.5 py-1.5 rounded transition-colors"
             >
-              Projects & Governance
+              Proyek & Tata Kelola
             </Link>
             <Link
               href="#domain"
               className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Domain Model
+              Model Domain
             </Link>
             <Link
               href="#specs"
               className="text-xs font-medium text-archive-secondary hover:text-archive-primary px-2.5 py-1.5 rounded transition-colors"
             >
-              Specifications
+              Spesifikasi
             </Link>
             <div className="h-4 w-px bg-archive-border mx-1" />
             <Link
@@ -106,7 +106,7 @@ export default function HomePage() {
               className="inline-flex items-center gap-1.5 text-xs font-medium text-archive-primary bg-archive-subtle hover:bg-archive-border/60 border border-archive-border px-3 py-1.5 rounded transition-all cursor-pointer"
             >
               <Archive className="w-3.5 h-3.5 text-archive-accent" />
-              <span>Launch Archive</span>
+              <span>Buka Arsip</span>
             </Link>
           </nav>
         </div>
@@ -117,40 +117,40 @@ export default function HomePage() {
         <section className="mb-14">
           <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-mono text-archive-accent bg-archive-subtle border border-archive-border mb-6">
             <span className="w-2 h-2 rounded-full bg-archive-accent animate-pulse" />
-            Private Technical Archive
+            Arsip Teknis Privat
           </div>
           <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-archive-primary max-w-3xl leading-tight">
-            Deterministic cross-project memory and context system.
+            Sistem memori dan konteks teknis lintas proyek yang deterministik.
           </h1>
           <p className="mt-4 text-base md:text-lg text-archive-secondary max-w-2xl leading-relaxed">
-            Preserving project decisions, technical notes, and verified source
-            provenance for AI-assisted engineering with zero hallucinations.
+            Mendokumentasikan keputusan proyek, catatan teknis, dan verifikasi sumber
+            rujukan untuk rekayasa berbasis AI tanpa halusinasi.
           </p>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link
               href="/memories"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-accent hover:bg-archive-accentHover text-archive-bg font-semibold text-xs font-mono transition-colors shadow-sm"
             >
-              <span>Explore Memories</span>
+              <span>Jelajahi Memori</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
             <Link
               href="/decisions"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-subtle hover:bg-archive-border text-archive-primary border border-archive-border text-xs font-mono transition-colors"
             >
-              <span>Browse ADRs</span>
+              <span>Telusuri ADR</span>
             </Link>
             <Link
               href="/collections"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-subtle hover:bg-archive-border text-archive-accent border border-archive-border text-xs font-mono transition-colors"
             >
-              <span>AI Context Bundles</span>
+              <span>Paket Konteks AI</span>
             </Link>
             <Link
               href="/projects"
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded bg-archive-subtle hover:bg-archive-border text-archive-secondary hover:text-archive-primary border border-archive-border text-xs font-mono transition-colors"
             >
-              <span>Scopes & Policies</span>
+              <span>Scope & Kebijakan</span>
             </Link>
           </div>
         </section>
@@ -159,10 +159,10 @@ export default function HomePage() {
         <section id="domain" className="mb-16">
           <div className="flex items-center justify-between mb-6 pb-2 border-b border-archive-border">
             <h2 className="text-xs font-mono uppercase tracking-wider text-archive-muted">
-              Established Domain Model Entities
+              Entitas Model Domain
             </h2>
             <span className="text-xs font-mono text-archive-emerald">
-              Pure TypeScript Enforced
+              Ditegakkan dengan TypeScript Murni
             </span>
           </div>
 
@@ -196,25 +196,25 @@ export default function HomePage() {
           <div className="flex items-center gap-2 mb-4">
             <ShieldCheck className="w-5 h-5 text-archive-emerald" />
             <h2 className="text-sm font-semibold text-archive-primary font-mono">
-              Repository Grounded Guarantees
+              Jaminan Berbasis Repositori
             </h2>
           </div>
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-archive-secondary">
             <li className="flex items-start gap-2">
               <span className="text-archive-emerald font-bold">✓</span>
-              <span>Default-private isolation between project scopes</span>
+              <span>Isolasi privat default antar scope proyek</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-archive-emerald font-bold">✓</span>
-              <span>Immutable version history on every revision</span>
+              <span>Riwayat versi kekal (immutable) pada setiap revisi</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-archive-emerald font-bold">✓</span>
-              <span>Embeddings are derived only, never canonical truth</span>
+              <span>Embedding murni sebagai data turunan, bukan kebenaran mutlak</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-archive-emerald font-bold">✓</span>
-              <span>Strictly testable deterministic business invariants</span>
+              <span>Invarian bisnis deterministik yang teruji secara ketat</span>
             </li>
           </ul>
         </section>
@@ -222,7 +222,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="border-t border-archive-border bg-archive-bg/80 py-6 text-center text-xs text-archive-muted">
-        <p>MemoryVault Architecture Baseline — Next.js App Router + TypeScript + Tailwind</p>
+        <p>Fondasi Arsitektur MemoryVault — Next.js App Router + TypeScript + Tailwind</p>
       </footer>
     </div>
   );

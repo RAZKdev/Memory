@@ -45,11 +45,11 @@ export function ReviseMemoryModal({
     setErrorMessage(null);
 
     if (!reasonForChange.trim()) {
-      setErrorMessage("Audit Requirement: reason for revision cannot be empty.");
+      setErrorMessage("Ketentuan Audit: alasan revisi tidak boleh kosong.");
       return;
     }
     if (!content.trim()) {
-      setErrorMessage("Content cannot be empty.");
+      setErrorMessage("Konten revisi tidak boleh kosong.");
       return;
     }
 
@@ -74,13 +74,13 @@ export function ReviseMemoryModal({
 
       const json = await res.json();
       if (!res.ok) {
-        throw new Error(json.error || "Failed to revise memory");
+        throw new Error(json.error || "Gagal merevisi memori");
       }
 
       onSuccess();
       onClose();
     } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : "An unexpected error occurred");
+      setErrorMessage(err instanceof Error ? err.message : "Terjadi kesalahan yang tidak diharapkan");
     } finally {
       setIsLoading(false);
     }
@@ -102,17 +102,17 @@ export function ReviseMemoryModal({
             <GitCommit className="w-5 h-5 text-archive-accent" />
             <div>
               <h2 id="modal-revise-title" className="text-base font-semibold text-archive-primary font-mono">
-                Revise Memory (v{memory.currentVersion} → v{nextVersion})
+                Revisi Memori (v{memory.currentVersion} → v{nextVersion})
               </h2>
               <p className="text-xs text-archive-muted">
-                Preserves prior versions and creates an immutable audit snapshot.
+                Mempertahankan versi sebelumnya dan membuat snapshot audit yang kekal.
               </p>
             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close revision modal"
+            aria-label="Tutup modal revisi"
             className="text-archive-secondary hover:text-archive-primary p-1.5 rounded hover:bg-archive-subtle transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
@@ -131,12 +131,12 @@ export function ReviseMemoryModal({
           {/* Mandatory Reason For Change */}
           <div className="p-3 bg-archive-accent/5 border border-archive-accent/30 rounded">
             <label htmlFor="revise-reason" className="block text-xs font-mono text-archive-accent mb-1 font-semibold">
-              Reason for Revision (Audit Requirement) *
+              Alasan Revisi (Wajib untuk Audit) *
             </label>
             <input
               id="revise-reason"
               type="text"
-              placeholder="e.g. Updated with pgvector HNSW index recommendation after benchmarks"
+              placeholder="contoh: Diperbarui dengan rekomendasi indeks pgvector HNSW setelah benchmark"
               value={reasonForChange}
               onChange={(e) => setReasonForChange(e.target.value)}
               className="w-full bg-archive-card border border-archive-border rounded px-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none"
@@ -147,7 +147,7 @@ export function ReviseMemoryModal({
           {/* Title */}
           <div>
             <label htmlFor="revise-title" className="block text-xs font-mono text-archive-secondary mb-1">
-              Title
+              Judul
             </label>
             <input
               id="revise-title"
@@ -162,7 +162,7 @@ export function ReviseMemoryModal({
           {/* Content */}
           <div>
             <label htmlFor="revise-content" className="block text-xs font-mono text-archive-secondary mb-1">
-              Revised Content *
+              Konten Revisi *
             </label>
             <textarea
               id="revise-content"
@@ -178,7 +178,7 @@ export function ReviseMemoryModal({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <div className="flex justify-between text-xs font-mono text-archive-secondary mb-1">
-                <label htmlFor="revise-confidence">Confidence Score: {(confidence * 100).toFixed(0)}%</label>
+                <label htmlFor="revise-confidence">Skor Keyakinan: {(confidence * 100).toFixed(0)}%</label>
               </div>
               <input
                 id="revise-confidence"
@@ -193,7 +193,7 @@ export function ReviseMemoryModal({
             </div>
             <div>
               <label htmlFor="revise-author" className="block text-xs font-mono text-archive-secondary mb-1">
-                Revising Author ID
+                ID Penulis Revisi
               </label>
               <input
                 id="revise-author"
@@ -208,7 +208,7 @@ export function ReviseMemoryModal({
           {/* Tags */}
           <div>
             <label htmlFor="revise-tags" className="block text-xs font-mono text-archive-secondary mb-1">
-              Tags
+              Tag
             </label>
             <input
               id="revise-tags"
@@ -226,7 +226,7 @@ export function ReviseMemoryModal({
               onClick={onClose}
               className="px-4 py-2 text-xs font-medium text-archive-secondary hover:text-archive-primary rounded border border-archive-border hover:bg-archive-subtle transition-colors cursor-pointer"
             >
-              Cancel
+              Batal
             </button>
             <button
               type="submit"
@@ -234,7 +234,7 @@ export function ReviseMemoryModal({
               className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-medium text-archive-bg bg-archive-accent hover:bg-archive-accentHover rounded font-semibold transition-colors disabled:opacity-50 cursor-pointer"
             >
               {isLoading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
-              <span>{isLoading ? "Saving Revision..." : `Commit v${nextVersion}`}</span>
+              <span>{isLoading ? "Menyimpan Revisi..." : `Simpan Revisi v${nextVersion}`}</span>
             </button>
           </div>
         </form>

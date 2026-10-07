@@ -3,8 +3,8 @@ import { MemoryWorkspace } from "@/components/MemoryWorkspace";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Memories — MemoryVault Technical Context Archive",
-  description: "Browse, create, and audit preserved cross-project memories, ADRs, and source provenance.",
+  title: "Memori — Arsip Konteks Teknis MemoryVault",
+  description: "Telusuri, buat, dan audit memori teknis lintas proyek, ADR, dan sumber rujukan.",
 };
 
 export const dynamic = "force-dynamic";
