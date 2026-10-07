@@ -213,6 +213,7 @@ export function ProjectsWorkspace({
               placeholder="Filter scope proyek berdasarkan nama atau slug..."
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
+              suppressHydrationWarning
               className="w-full bg-archive-card border border-archive-border rounded pl-9 pr-3 py-2 text-xs text-archive-primary focus:border-archive-accent outline-none font-mono"
             />
           </div>

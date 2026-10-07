@@ -15,6 +15,7 @@ out/
 coverage/
 test-results/
 playwright-report/
+qa-results/
 
 # Debug logs
 npm-debug.log*
