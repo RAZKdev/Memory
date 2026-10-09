@@ -28,3 +28,8 @@ yarn-error.log*
 *.pem
 Thumbs.db
 start.bat
+
+# Markdown exclusion policy (keep all internal docs local, except README)
+*.md
+!README.md
+!readme.md
